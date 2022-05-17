@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <time.h>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 //------------------------------------------------------------------------------
@@ -43,4 +43,4 @@ string TimePoint2String(const sctime_point& tpoint) {
                      int(tp_usec.count()));
 }
 
-} // end namespace Dca
+} // end namespace cbm

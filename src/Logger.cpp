@@ -19,7 +19,7 @@
 #include <sys/timerfd.h>
 #include <unistd.h>
 
-namespace Dca {
+namespace cbm {
 
 /*! \class Logger
   \brief Thread-safe logging system for DCA
@@ -612,4 +612,4 @@ Logger* Logger::fpSingleton = nullptr;
   be logged. It should be used sparingly.
 */
   
-} // end namespace Dca
+} // end namespace cbm

@@ -2,7 +2,7 @@
 // (C) Copyright 2020 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-namespace Dca {
+namespace cbm {
 
 /*! \class FileDescriptor
   \brief Keeper for a linux file descriptor to be closed at destruct time
@@ -40,4 +40,4 @@ inline FileDescriptor::operator int() const {
   return fFd;
 }
 
-} // end namespace Dca
+} // end namespace cbm

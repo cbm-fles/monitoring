@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 sctime_point        ScNow();
@@ -29,7 +29,7 @@ sctime_point        Nsec2ScTimePoint(long nsec);
 double              ScTimeDiff2Double(const sctime_point& tbeg,
                                       const sctime_point& tend);
 
-} // end namespace Dca
+} // end namespace cbm
 
 #include "ChronoHelper.ipp"
 

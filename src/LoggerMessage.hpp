@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace Dca {
+namespace cbm {
 
 /*! \struct LoggerMessage
   \brief Holds the context of a Logger message
@@ -34,6 +34,6 @@ struct LoggerMessage {
   string            fMessage {""};          //!< message body
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 #endif

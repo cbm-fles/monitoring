@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class Logger;                               // forward declaration
@@ -31,7 +31,7 @@ class LoggerSink {
   int               fLogLevel;              //!< \glos{loglevel} for write
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 #include "LoggerSink.ipp"
 

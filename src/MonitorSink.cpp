@@ -11,7 +11,7 @@
 #include <iomanip>
 #include <sstream>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 /*! \class MonitorSink
@@ -124,4 +124,4 @@ string MonitorSink::InfluxLine(const Metric& point) {
   return res;
 }
 
-} // end namespace Dca
+} // end namespace cbm

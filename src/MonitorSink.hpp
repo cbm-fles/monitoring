@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class Monitor;                               // forward declaration
@@ -41,7 +41,7 @@ class MonitorSink {
   double            fStatSndTime {0.};      //!< time spend in send requests
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 // #include "MonitorSink.ipp"
 

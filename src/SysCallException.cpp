@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
   
 /*! \class SysCallException
@@ -53,4 +53,4 @@ SysCallException::SysCallException(const string& where, const string& call,
                         ::strerror(eno)))
 {}
 
-} // end namespace Dca
+} // end namespace cbm

@@ -2,7 +2,7 @@
 // (C) Copyright 2020-2021 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 //-----------------------------------------------------------------------------
@@ -28,4 +28,4 @@ inline Context* Context::Ptr() {
   return fpSingleton;
 }
 
-} // end namespace Dca
+} // end namespace cbm

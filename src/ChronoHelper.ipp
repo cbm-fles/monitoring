@@ -2,7 +2,7 @@
 // (C) Copyright 2020-2021 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 //-----------------------------------------------------------------------------
@@ -158,4 +158,4 @@ inline double ScTimeDiff2Double(const sctime_point& tbeg,
   return dt.count();
 }
 
-} // end namespace Dca
+} // end namespace cbm

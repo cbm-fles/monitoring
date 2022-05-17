@@ -9,7 +9,7 @@
 #include "LoggerMessage.hpp"
 #include "PThreadHelper.hpp"
 
-namespace Dca {
+namespace cbm {
 
 /*! \class LoggerStream
   \brief Provides an `ostream` interface to which a message can be written
@@ -64,4 +64,4 @@ LoggerStream::~LoggerStream()
         move(fKeys), move(text)});
 }
   
-} // end namespace Dca
+} // end namespace cbm

@@ -7,12 +7,12 @@
 
 #include <chrono>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 using sctime_point = chrono::system_clock::time_point;
 using scduration   = chrono::system_clock::duration;
 
-} // end namespace Dca
+} // end namespace cbm
 
 #endif

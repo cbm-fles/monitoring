@@ -11,7 +11,7 @@
 
 #include <fstream>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 /*! \class MonitorSinkFile
@@ -63,4 +63,4 @@ void MonitorSinkFile::ProcessHeartbeat() {
 }
 
 
-} // end namespace Dca
+} // end namespace cbm

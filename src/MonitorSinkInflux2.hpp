@@ -7,7 +7,7 @@
 
 #include "MonitorSink.hpp"
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class MonitorSinkInflux2 : public MonitorSink {
@@ -27,7 +27,7 @@ class MonitorSinkInflux2 : public MonitorSink {
   string            fToken;                 //!< access token
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 //#include "MonitorSinkInflux2.ipp"
 

@@ -17,7 +17,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace Dca {
+namespace cbm {
 
 // Note: the \file is required by doxygen to enable documentation of macros
 /*!
@@ -91,7 +91,7 @@ class Logger {
   static Logger*    fpSingleton;            //!< \glos{singleton} this
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 // framework macros, usually not used directly
 #define DCALOG(sel,sev,keys1,mid,keys2) \

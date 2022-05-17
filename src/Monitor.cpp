@@ -20,7 +20,7 @@
 #include <sys/timerfd.h>
 #include <unistd.h>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 using namespace std::chrono_literals;
 
@@ -364,4 +364,4 @@ MonitorSink& Monitor::SinkRef(const string& sname) {
 
 Monitor* Monitor::fpSingleton = nullptr;
 
-} // end namespace Dca
+} // end namespace cbm

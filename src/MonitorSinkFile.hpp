@@ -11,7 +11,7 @@
 #include <iostream>
 #include <memory>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class MonitorSinkFile : public MonitorSink {
@@ -26,7 +26,7 @@ class MonitorSinkFile : public MonitorSink {
   unique_ptr<ofstream>  fpOStream {};       //!< uptr to general output stream
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 //#include "MonitorSinkFile.ipp"
 

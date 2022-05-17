@@ -2,7 +2,7 @@
 // (C) Copyright 2020 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-namespace Dca {
+namespace cbm {
 
 //-----------------------------------------------------------------------------
 /*! \brief Returns reference of `ostream` embedded in LoggerStream
@@ -14,4 +14,4 @@ inline ostream& LoggerStream::Stream() {
   return fSStream;
 }
 
-} // end namespace Dca
+} // end namespace cbm

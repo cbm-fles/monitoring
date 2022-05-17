@@ -11,7 +11,7 @@
 #include <iostream>
 #include <memory>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
   
 class LoggerSinkFile : public LoggerSink {
@@ -25,7 +25,7 @@ class LoggerSinkFile : public LoggerSink {
   unique_ptr<ofstream>  fpOStream {};       //!< uptr to general output stream
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 //#include "LoggerSinkFile.ipp"
 

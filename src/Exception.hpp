@@ -8,7 +8,7 @@
 #include <exception>
 #include <string>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class Exception : public exception {
@@ -23,7 +23,7 @@ class Exception : public exception {
   string            fString {""};           //!< what string
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 #include "Exception.ipp"
 

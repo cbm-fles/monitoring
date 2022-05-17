@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 string FmtD(long val, int width=1);
@@ -23,7 +23,7 @@ string FmtB(unsigned long val, int width=1);
 string FmtF(double val, int width=5, int prec=2);
 string FmtE(double val, int width=12, int prec=6);
 
-} // end namespace Dca
+} // end namespace cbm
 
 #include "FormatHelper.ipp"
 

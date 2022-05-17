@@ -7,7 +7,7 @@
 
 # include "Exception.hpp"
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class SysCallException : public Exception {
@@ -18,7 +18,7 @@ class SysCallException : public Exception {
                                      const string& info, int eno);
 };
   
-} // end namespace Dca
+} // end namespace cbm
 
 //#include "SysCallException.ipp"
 

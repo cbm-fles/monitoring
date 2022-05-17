@@ -6,7 +6,7 @@
 
 #include <pthread.h>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 //------------------------------------------------------------------------------
@@ -52,4 +52,4 @@ string PThreadName() {
   return string(tname);
 }
 
-} // end namespace Dca
+} // end namespace cbm

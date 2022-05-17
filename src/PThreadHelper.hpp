@@ -7,13 +7,13 @@
 
 #include <string>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 void SetPThreadName(const string& name);
 string PThreadName();
 
-} // end namespace Dca
+} // end namespace cbm
 
 //#include "PThreadHelper.ipp"
 

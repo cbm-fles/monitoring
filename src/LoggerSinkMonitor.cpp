@@ -10,7 +10,7 @@
 #include "Metric.hpp"
 #include "Monitor.hpp"
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 /*! \class LoggerSinkMonitor
@@ -73,4 +73,4 @@ void LoggerSinkMonitor::ProcessMessageVec(const vector<LoggerMessage>& msgvec) {
   }
 }
 
-} // end namespace Dca
+} // end namespace cbm

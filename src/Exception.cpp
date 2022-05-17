@@ -4,7 +4,7 @@
 
 #include "Exception.hpp"
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 /*! \class Exception
@@ -27,4 +27,4 @@ const char* Exception::what() const noexcept {
   return fString.c_str();
 }
 
-} // end namespace Dca
+} // end namespace cbm

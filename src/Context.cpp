@@ -25,7 +25,7 @@
 #include <string.h>
 #include <unistd.h>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 /*! \class Context
@@ -381,4 +381,4 @@ void Context::ConnectSignalCatcher(int signum) {
 
 Context* Context::fpSingleton = nullptr;
 
-} // end namespace Dca
+} // end namespace cbm

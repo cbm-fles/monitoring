@@ -24,7 +24,7 @@
 
 #include <regex>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 namespace http = boost::beast::http;    // from <boost/beast/http.hpp>
@@ -211,4 +211,4 @@ void MonitorSinkInflux1::SendData(const string& msg) {
   return;
 }
 
-} // end namespace Dca
+} // end namespace cbm

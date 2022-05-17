@@ -12,7 +12,7 @@
 
 #include <syslog.h>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 /*! \class LoggerSinkSyslog
@@ -78,4 +78,4 @@ void LoggerSinkSyslog::ProcessMessageVec(const vector<LoggerMessage>& msgvec) {
   }
 }
 
-} // end namespace Dca
+} // end namespace cbm

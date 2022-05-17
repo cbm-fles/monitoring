@@ -2,7 +2,7 @@
 // (C) Copyright 2020 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-namespace Dca {
+namespace cbm {
 
 //-----------------------------------------------------------------------------
 //! \brief Returns hostname used by Logger
@@ -34,5 +34,5 @@ inline Logger* Logger::Ptr() {
   return fpSingleton;
 }
 
-} // end namespace Dca
+} // end namespace cbm
 

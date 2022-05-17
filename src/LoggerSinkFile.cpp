@@ -12,7 +12,7 @@
 
 #include <fstream>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 /*! \class LoggerSinkFile
@@ -68,4 +68,4 @@ void LoggerSinkFile::ProcessMessageVec(const vector<LoggerMessage>& msgvec) {
   if (msgcnt > 0) os.flush();
 }
 
-} // end namespace Dca
+} // end namespace cbm

@@ -10,7 +10,7 @@
 
 #include <unistd.h>
 
-namespace Dca {
+namespace cbm {
 
 class FileDescriptor {
   public:
@@ -25,7 +25,7 @@ class FileDescriptor {
   int               fFd {-1};               //!< file descriptor number
 };
   
-} // end namespace Dca
+} // end namespace cbm
 
 #include "FileDescriptor.ipp"
 

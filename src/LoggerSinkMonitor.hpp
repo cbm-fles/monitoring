@@ -7,7 +7,7 @@
 
 #include "LoggerSink.hpp"
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class LoggerSinkMonitor : public LoggerSink {
@@ -20,7 +20,7 @@ class LoggerSinkMonitor : public LoggerSink {
   private:
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 //#include "LoggerSinkMonitor.ipp"
 

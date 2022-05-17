@@ -15,7 +15,7 @@
 
 int main(int argc, char* argv[]) {
   using namespace std;
-  using namespace Dca;
+  using namespace cbm;
 
   // startup Dca Context
   Context dca;

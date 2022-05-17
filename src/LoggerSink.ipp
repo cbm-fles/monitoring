@@ -2,7 +2,7 @@
 // (C) Copyright 2020 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-namespace Dca {
+namespace cbm {
 
 //-----------------------------------------------------------------------------
 /*! \brief Set \glos{loglevel}
@@ -21,4 +21,4 @@ inline int LoggerSink::LogLevel() const {
 }
 
 
-} // end namespace Dca
+} // end namespace cbm

@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 //------------------------------------------------------------------------------
@@ -113,4 +113,4 @@ string FmtE(double val, int width, int prec) {
   return buf;
 }
 
-} // end namespace Dca
+} // end namespace cbm

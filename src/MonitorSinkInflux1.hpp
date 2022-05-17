@@ -7,7 +7,7 @@
 
 #include "MonitorSink.hpp"
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class MonitorSinkInflux1 : public MonitorSink {
@@ -26,7 +26,7 @@ class MonitorSinkInflux1 : public MonitorSink {
   string            fDB;                    //!< target database
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 //#include "MonitorSinkInflux1.ipp"
 

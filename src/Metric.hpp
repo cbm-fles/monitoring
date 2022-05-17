@@ -12,7 +12,7 @@
 #include <variant>
 #include <vector>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 using MetricTagSet = vector<pair<string, string>>;
@@ -44,7 +44,7 @@ struct Metric {
   sctime_point      fTimestamp;             //!< time stamp
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 #include "Metric.ipp"
 

@@ -4,7 +4,7 @@
 
 #include "LoggerSink.hpp"
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 /*! \class LoggerSink
@@ -29,4 +29,4 @@ LoggerSink::LoggerSink(Logger& logger, const string& path, int lvl) :
   fLogLevel(lvl)
 {}
 
-} // end namespace Dca
+} // end namespace cbm

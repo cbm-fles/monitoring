@@ -2,7 +2,7 @@
 // (C) Copyright 2020 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 //-----------------------------------------------------------------------------
@@ -53,4 +53,4 @@ inline string FmtD(unsigned char val, int width) {
   return FmtD(static_cast<unsigned long>(val), width);
 }
 
-} // end namespace Dca
+} // end namespace cbm

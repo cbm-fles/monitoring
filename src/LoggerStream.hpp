@@ -9,7 +9,7 @@
 
 #include <sstream>
 
-namespace Dca {
+namespace cbm {
 
 class Logger;                               // forward declaration
 
@@ -31,7 +31,7 @@ class LoggerStream {
   ostringstream     fSStream;               //!< message
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 #include "LoggerStream.ipp"
 

@@ -13,7 +13,7 @@
 
 #include <signal.h>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class Context {
@@ -46,7 +46,7 @@ class Context {
   static Context*   fpSingleton;            //!< \glos{singleton} this
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 #include "Context.ipp"
 

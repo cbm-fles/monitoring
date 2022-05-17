@@ -19,7 +19,7 @@
 
 #include "Metric.hpp"
 
-namespace Dca {
+namespace cbm {
 using namespace std;
 
 class MonitorSink;                          // forward declaration
@@ -81,7 +81,7 @@ class Monitor {
 
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 #include "Monitor.ipp"
 

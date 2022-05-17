@@ -9,7 +9,7 @@
 
 #include <vector>
 
-namespace Dca {
+namespace cbm {
 using namespace std;
   
 class LoggerSinkSyslog : public LoggerSink {
@@ -23,7 +23,7 @@ class LoggerSinkSyslog : public LoggerSink {
   vector<int>       fSevMap {};             //!< severity mapping
 };
 
-} // end namespace Dca
+} // end namespace cbm
 
 //#include "LoggerSinkSyslog.ipp"
 
