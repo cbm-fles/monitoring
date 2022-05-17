@@ -11,14 +11,14 @@
   performance testing of the base framework.
 */
 
-#include "Context.hpp"
+#include "Application.hpp"
 
 int main(int argc, char* argv[]) {
   using namespace std;
   using namespace cbm;
 
-  // startup Cbm Context
-  Context cbm;
+  // startup Cbm Application
+  Application cbm;
   if (int rc = cbm.Init(argc, argv); rc != 0) return rc;
 
   // do something

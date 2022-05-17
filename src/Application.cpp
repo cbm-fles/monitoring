@@ -2,7 +2,7 @@
 // (C) Copyright 2020-2022 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-#include "Context.hpp"
+#include "Application.hpp"
 
 #include "ChronoHelper.hpp"
 #include "Exception.hpp"
@@ -28,10 +28,10 @@
 namespace cbm {
 using namespace std;
 
-/*! \class Context
-  \brief Execution context of a \glos{CBMmain} program.
+/*! \class Application
+  \brief Execution application of a \glos{CBMmain} program.
 
-  This class holds the complete execution context of a \glos{CBMmain}:
+  This class holds the complete execution application of a \glos{CBMmain}:
   - controls via the Init() method the initialization and instantiates
     - the Logger facility
     - the Monitor facility
@@ -42,10 +42,10 @@ using namespace std;
   A call to EventLoop() starts the \glos{RPC} execution environment, which
   in turn will start all other activities in a CBM.
 
-  A \glos{CBMmain} program is a thin wrapper for Context.
+  A \glos{CBMmain} program is a thin wrapper for Application.
   See \glos{CBMmain} for further details.
 
-  \note Context is a \glos{singleton}, only one instance is allowed per process.
+  \note Application is a \glos{singleton}, only one instance is allowed per process.
 
   \note On \ref objectownership
     - is owned by \glos{CBMmain}
@@ -61,18 +61,18 @@ using namespace std;
 //! \brief Prints last chance error messages to `cout`
 
 static void SysCallErr(const char* what) {
-  cerr << "Cbm Context::SignalCatcher: "s << what << " FAILED: "
+  cerr << "Cbm Application::SignalCatcher: "s << what << " FAILED: "
        << strerror(errno) << endl;
 }
 
 //-----------------------------------------------------------------------------
 /*! \brief Constructor
 
-  Creates a absolutely empty and non-functional Context.
-  The only useful operation on such a Context is to execute Init().
+  Creates a absolutely empty and non-functional Application.
+  The only useful operation on such a Application is to execute Init().
  */
 
-Context::Context() :
+Application::Application() :
   fpLogger(),
   fpMonitor(),
   fOptMapOpen(),
@@ -81,7 +81,7 @@ Context::Context() :
 {
   // singleton check
   if (fpSingleton)
-    throw Exception("Context::ctor: already instantiated");
+    throw Exception("Application::ctor: already instantiated");
   fpSingleton = this;
 }
 
@@ -94,9 +94,9 @@ Context::Context() :
   - and finally destructs the Logger
  */
 
-Context::~Context() {
+Application::~Application() {
   // control destruction sequence
-  if (fpLogger) CBMLOGNOT1("cid=__Context", "CBM-end") // the last log message
+  if (fpLogger) CBMLOGNOT1("cid=__Application", "CBM-end") // the last log message
                   << "CBM finished";
   cout << "Cbm finished" << endl;           // stdout message (for systemd)
 
@@ -109,7 +109,7 @@ Context::~Context() {
 }
 
 //-----------------------------------------------------------------------------
-/*! \brief Initiallize the Context
+/*! \brief Initiallize the Application
 
   \param argc  argument count passed from `main` program
   \param argv  argument vector passed from `main` program
@@ -139,12 +139,12 @@ Context::~Context() {
     all threads of the program. When a thread is created it will inherit
     the signal block mask. Therefore the blocking of signals handled later
     via `signalfd` must be done _before_ any threads are started, e.g. in
-    Logger and ZMQ context.
+    Logger and ZMQ application.
     Therefore the de-facto process wide signal block mask is set here
     as the very first thing of Init(), before the Logger is started,
  */
 
-int Context::Init(int argc, char* argv[]) {
+int Application::Init(int argc, char* argv[]) {
   // setup signal block mask -------------------------------
   //  All threads will inherit this configuration !
   //  This MUST be done BEFORE any other threads are started !!
@@ -156,7 +156,7 @@ int Context::Init(int argc, char* argv[]) {
   sigaddset(&sigmask, SIGHUP);
 
   if (auto irc = sigprocmask(SIG_BLOCK, &sigmask, nullptr); irc < 0) {
-    cerr << "Cbm Context::Init: sigprocmask failed: " << ::strerror(errno)
+    cerr << "Cbm Application::Init: sigprocmask failed: " << ::strerror(errno)
          << endl;
     return 1;
   }
@@ -225,9 +225,9 @@ int Context::Init(int argc, char* argv[]) {
       fpMonitor->OpenSink(monipath);
       fpLogger->OpenSink("monitor:"s, Logger::kLogNote);
     } catch (const exception& e) {
-      CBMLOGFAT1("cid=__Context", "Init-badmoni")
-        << "Cbm Context::Init: --monitor failed: " << e.what();
-      cerr << "Cbm Context::Init: --monitor failed: " << e.what() << endl;
+      CBMLOGFAT1("cid=__Application", "Init-badmoni")
+        << "Cbm Application::Init: --monitor failed: " << e.what();
+      cerr << "Cbm Application::Init: --monitor failed: " << e.what() << endl;
       return 1;
     }
   }
@@ -238,9 +238,9 @@ int Context::Init(int argc, char* argv[]) {
     for (auto& [opt, val]: fOptMapOpen)
       badargs += fmt::format(" {} {}"s, opt, val);
 
-    CBMLOGFAT1("cid=__Context", "Init-badargs")
-      << "Cbm Context::Init: unknown options:" << badargs;
-    cerr << "Cbm Context::Init: unknown options:" << badargs << endl;
+    CBMLOGFAT1("cid=__Application", "Init-badargs")
+      << "Cbm Application::Init: unknown options:" << badargs;
+    cerr << "Cbm Application::Init: unknown options:" << badargs << endl;
     return 1;
   }
 
@@ -250,7 +250,7 @@ int Context::Init(int argc, char* argv[]) {
 //-----------------------------------------------------------------------------
 //! \brief Tests whether command line option `opt` given
 
-bool Context::TstOpt(const string& opt) {
+bool Application::TstOpt(const string& opt) {
   if (fOptMapOpen.count(opt) > 0) {
     fOptMapDone[opt] = fOptMapOpen[opt];
     fOptMapOpen.erase(opt);
@@ -263,7 +263,7 @@ bool Context::TstOpt(const string& opt) {
 //-----------------------------------------------------------------------------
 //! \brief Returns value for command line option `opt` or default `def`
 
-const string& Context::GetOptString(const string& opt, const string& def) {
+const string& Application::GetOptString(const string& opt, const string& def) {
   return TstOpt(opt) ? fOptMapDone[opt] : def;
 }
 
@@ -272,16 +272,16 @@ const string& Context::GetOptString(const string& opt, const string& def) {
    \throws Exception if option value doesn't convert to an `int`
  */
 
-int Context::GetOptInt(const string& opt, int def) {
+int Application::GetOptInt(const string& opt, int def) {
   if (!TstOpt(opt)) return def;
   istringstream ss(fOptMapDone[opt]);
   int val;
   if (!(ss >> val))                         // convert
-    throw Exception(fmt::format("Context::GetOptInt: conversion error in '{}'"s,
+    throw Exception(fmt::format("Application::GetOptInt: conversion error in '{}'"s,
                                 fOptMapDone[opt]));
   char c;
   if (ss >> c)                              // check for trailing stuff
-    throw Exception(fmt::format("Context::GetOptInt: conversion error in '{}'"s,
+    throw Exception(fmt::format("Application::GetOptInt: conversion error in '{}'"s,
                                 fOptMapDone[opt]));
   return val;
 }
@@ -289,12 +289,12 @@ int Context::GetOptInt(const string& opt, int def) {
 //-----------------------------------------------------------------------------
 //! \brief Connects SignalCatcher to signal `signum`.
 
-void Context::ConnectSignalCatcher(int signum) {
+void Application::ConnectSignalCatcher(int signum) {
   struct sigaction sigact = {};
-  sigact.sa_sigaction = Context::SignalCatcher;
+  sigact.sa_sigaction = Application::SignalCatcher;
   sigact.sa_flags = SA_SIGINFO;
   if (auto irc = sigaction(signum, &sigact, nullptr); irc < 0)
-    throw SysCallException("Context::ConnectSignalHandler"s, "sigaction"s,
+    throw SysCallException("Application::ConnectSignalHandler"s, "sigaction"s,
                            errno);
 }
 
@@ -317,7 +317,7 @@ void Context::ConnectSignalCatcher(int signum) {
     to `demangle` the symbols and get them more readable.
  */
 
-[[noreturn]] void Context::SignalCatcher(int signum, siginfo_t* siginf, void*) {
+[[noreturn]] void Application::SignalCatcher(int signum, siginfo_t* siginf, void*) {
   // protect agains multiple calls
   ::signal(signum, SIG_DFL);
 
@@ -363,11 +363,11 @@ void Context::ConnectSignalCatcher(int signum) {
   // For `SIGSEGV` in \glos{DObject} code and `SIGBUS` in PCIe access code this
   // should always work, and that are the cases this reporting is made for.
   if (PThreadName() != "Cbm:logger") {
-    CBMLOGFAT1("cid=__Context", "SignalCatcher") << msg.str();
+    CBMLOGFAT1("cid=__Application", "SignalCatcher") << msg.str();
     timespec dt{0, 200000000};
     if (::nanosleep(&dt, nullptr) < 0) SysCallErr("nanosleep");
   } else {
-    cerr << "Cbm Context::SignalCatcher:" << msg.str() << endl;
+    cerr << "Cbm Application::SignalCatcher:" << msg.str() << endl;
   }
 
   // finally call abort, which creates a core dump
@@ -379,6 +379,6 @@ void Context::ConnectSignalCatcher(int signum) {
 //-----------------------------------------------------------------------------
 // define static member variables
 
-Context* Context::fpSingleton = nullptr;
+Application* Application::fpSingleton = nullptr;
 
 } // end namespace cbm

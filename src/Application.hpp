@@ -2,8 +2,8 @@
 // (C) Copyright 2020-2021 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-#ifndef included_Cbm_Context
-#define included_Cbm_Context 1
+#ifndef included_Cbm_Application
+#define included_Cbm_Application 1
 
 #include "Logger.hpp"
 #include "Monitor.hpp"
@@ -16,11 +16,11 @@
 namespace cbm {
 using namespace std;
 
-class Context {
+class Application {
   public:
 
-                    Context();
-                    ~Context();
+                    Application();
+                    ~Application();
 
   int               Init(int argc, char* argv[]);
 
@@ -30,8 +30,8 @@ class Context {
 
   const string&     ProgName() const;
 
-  static Context&   Ref();
-  static Context*   Ptr();
+  static Application&   Ref();
+  static Application*   Ptr();
 
   private:
   void              ConnectSignalCatcher(int signum);
@@ -43,11 +43,11 @@ class Context {
   unordered_map<string,string> fOptMapOpen; //!< options still open
   unordered_map<string,string> fOptMapDone; //!< options alread processed
   string            fProgName;              //!< program name
-  static Context*   fpSingleton;            //!< \glos{singleton} this
+  static Application*   fpSingleton;            //!< \glos{singleton} this
 };
 
 } // end namespace cbm
 
-#include "Context.ipp"
+#include "Application.ipp"
 
 #endif

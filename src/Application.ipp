@@ -8,23 +8,23 @@ using namespace std;
 //-----------------------------------------------------------------------------
 //! \brief Returns program name
 
-inline const string& Context::ProgName() const {
+inline const string& Application::ProgName() const {
   return fProgName;
 }
 
 //-----------------------------------------------------------------------------
 //! \brief Static method which returns a reference of the
-//!  Context \glos{singleton}
+//!  Application \glos{singleton}
 
-inline Context& Context::Ref() {
+inline Application& Application::Ref() {
   return *fpSingleton;
 }
 
 //-----------------------------------------------------------------------------
 //! \brief Static method which returns a pointer to the
-//!  Context \glos{singleton}
+//!  Application \glos{singleton}
 
-inline Context* Context::Ptr() {
+inline Application* Application::Ptr() {
   return fpSingleton;
 }
 
