@@ -35,26 +35,7 @@ using namespace std;
   - controls the initialization and instantiates
     - the Logger facility
     - the Monitor facility
-  - and last but not least provides a signal handler for _well documented
-    crash_ via `SIGSEGV` and `SIGBUS` (see SignalCatcher())
-
-  \note On \ref objectownership
-    - is owned by \glos{CBMmain}
-    - owns Logger
-    - owns Monitor
  */
-
-//-----------------------------------------------------------------------------
-// local helper functions
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-//! \brief Prints last chance error messages to `cout`
-
-static void SysCallErr(const char* what) {
-  cerr << "Cbm Application::SignalCatcher: "s << what << " FAILED: "
-       << strerror(errno) << endl;
-}
 
 //-----------------------------------------------------------------------------
 /*! \brief Destructor
@@ -90,7 +71,6 @@ Application::~Application() {
   The Init sequence is
   - set process-wide signal block mask (see note below)
   - startup Logger (which starts "Cbm:logger" thread)
-  - setup signal catcher for `SIGSEGV` and `SIGBUS` (see SignalCatcher())
   - process startup options
   - startup Monitor (which starts "Cbm:monitor" thread)
 
@@ -183,10 +163,6 @@ Application::Application(int argc, char* argv[]) :
     fpLogger->OpenSink(logsinkname, Logger::kLogTrace);
   }
 
-  // setup signal catcher ----------------------------------
-  ConnectSignalCatcher(SIGSEGV);
-  ConnectSignalCatcher(SIGBUS);
-
   // startup Monitor ---------------------------------------
   fpMonitor = make_unique<Monitor>();
   string monipath = GetOptString("--monitor"s, ""s);
@@ -252,96 +228,6 @@ int Application::GetOptInt(const string& opt, int def) {
     throw Exception(fmt::format("Application::GetOptInt: conversion error in '{}'"s,
                                 fOptMapDone[opt]));
   return val;
-}
-
-//-----------------------------------------------------------------------------
-//! \brief Connects SignalCatcher to signal `signum`.
-
-void Application::ConnectSignalCatcher(int signum) {
-  struct sigaction sigact = {};
-  sigact.sa_sigaction = Application::SignalCatcher;
-  sigact.sa_flags = SA_SIGINFO;
-  if (auto irc = sigaction(signum, &sigact, nullptr); irc < 0)
-    throw SysCallException("Application::ConnectSignalHandler"s, "sigaction"s,
-                           errno);
-}
-
-//-----------------------------------------------------------------------------
-/*! \brief Handler for program error signals like `SIGSEGV` and `SIGBUS`
-
-  No graceful shutdown is possible after such a signal is recieved.
-  The only action possible is to collect some status information and
-  make it available for later diagnosis. This handler
-  - creates an error message with signal and backtrace information
-  - writes this message to a file named with a name of the form
-    `cbm_crash_yyyy-mm-ddThh:mm:ss.ssssss_<hostname>.log`
-    into the current working directory
-  - writes this message to Logger with severity _Fatal_
-  - and calls abort() which typically will create a `core` dump
-
-  \note the `cbm` should be linked with `-rdynamic` to ensure that
-    the backtrace has symbol information and not only addresses.
-  \note the message has the backtrace in `mangled` form. Use `c++filt`
-    to `demangle` the symbols and get them more readable.
- */
-
-[[noreturn]] void Application::SignalCatcher(int signum, siginfo_t* siginf, void*) {
-  // protect agains multiple calls
-  ::signal(signum, SIG_DFL);
-
-  // collect basic signal info
-  ostringstream msg;
-  msg << "got signal: si_signo=" << signum
-      << ", si_code=" << siginf->si_code
-      << ", name=" << ::strsignal(signum);
-  // get fault address
-  if (signum == SIGSEGV || signum == SIGBUS) {
-    msg << "\nat si_addr=" << siginf->si_addr;
-  }
-  // get fault traceback
-  msg << "\nin thread " << PThreadName() << " at";
-  const size_t btbufsize = 256;
-  void*  btbuf[btbufsize];
-  int nbt = ::backtrace(btbuf, btbufsize);
-  char** btsym = ::backtrace_symbols(btbuf, nbt);
-  if (btsym) {
-    for (int i=1; i<nbt; i++) {
-      msg << "\n  #" << i << " " << btsym[i];
-    }
-  }
-  ::free(btsym);
-  msg << "\nCbm CRASHED - core dump requested\n";
-
-  // Write cbm_crash_yyyy-mm-ddThh:mm:ss.ssssss_<hostname>.log file in local dir
-  char hname[80] = {};
-  if (auto rc = ::gethostname(hname, sizeof(hname)); rc < 0) hname[0] = 0;
-  string fname = fmt::format("cbm_crash_{}_{}.log", TimeStamp(), hname);
-  auto fd = ::open(fname.c_str(), O_CREAT|O_WRONLY, S_IRUSR|S_IWUSR|S_IRGRP);
-  if (fd > 0) {
-    string str = msg.str();
-    if (::write(fd, str.c_str(), str.length()) < 0) SysCallErr("write");
-    if (::close(fd) < 0) SysCallErr("close");
-  } else {
-    SysCallErr("open");
-  }
-
-  // Send output to Logger if not on Logger thread (in that case send to cerr).
-  // Theoretically this might dead-lock when the logger queue protection lock
-  // is held. That can only happen if the problem is within the Logger code.
-  // For `SIGSEGV` in \glos{DObject} code and `SIGBUS` in PCIe access code this
-  // should always work, and that are the cases this reporting is made for.
-  if (PThreadName() != "Cbm:logger") {
-    CBMLOGFAT1("cid=__Application", "SignalCatcher") << msg.str();
-    timespec dt{0, 200000000};
-    if (::nanosleep(&dt, nullptr) < 0) SysCallErr("nanosleep");
-  } else {
-    cerr << "Cbm Application::SignalCatcher:" << msg.str() << endl;
-  }
-
-  // finally call abort, which creates a core dump
-  cerr << "Cbm CRASHED - backtrace in " << fname << "\n"
-       << "Cbm CRASHED - calling std::abort (will core dump)" << endl;
-  ::abort();
 }
 
 } // end namespace cbm
