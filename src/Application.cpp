@@ -32,20 +32,11 @@ using namespace std;
   \brief Execution application of a \glos{CBMmain} program.
 
   This class holds the complete execution application of a \glos{CBMmain}:
-  - controls via the Init() method the initialization and instantiates
+  - controls the initialization and instantiates
     - the Logger facility
     - the Monitor facility
-  - owns directly or indirectly owns all objects (see \ref objectownership)
   - and last but not least provides a signal handler for _well documented
     crash_ via `SIGSEGV` and `SIGBUS` (see SignalCatcher())
-
-  A call to EventLoop() starts the \glos{RPC} execution environment, which
-  in turn will start all other activities in a CBM.
-
-  A \glos{CBMmain} program is a thin wrapper for Application.
-  See \glos{CBMmain} for further details.
-
-  \note Application is a \glos{singleton}, only one instance is allowed per process.
 
   \note On \ref objectownership
     - is owned by \glos{CBMmain}
@@ -66,26 +57,6 @@ static void SysCallErr(const char* what) {
 }
 
 //-----------------------------------------------------------------------------
-/*! \brief Constructor
-
-  Creates a absolutely empty and non-functional Application.
-  The only useful operation on such a Application is to execute Init().
- */
-
-Application::Application() :
-  fpLogger(),
-  fpMonitor(),
-  fOptMapOpen(),
-  fOptMapDone(),
-  fProgName(PThreadName())
-{
-  // singleton check
-  if (fpSingleton)
-    throw Exception("Application::ctor: already instantiated");
-  fpSingleton = this;
-}
-
-//-----------------------------------------------------------------------------
 /*! \brief Destructor
 
   This is the central place for the controlled shutdown of a \glos{CBMmain}. It
@@ -102,18 +73,13 @@ Application::~Application() {
 
   timespec dt{0,200000000};                 // allow logger + monitor to process
   ::nanosleep(&dt, nullptr);                //   pending messages
-  fpMonitor.reset(nullptr);                 // stop Monitor 2nd last
-  fpLogger.reset(nullptr);                  // and Logger last
-
-  fpSingleton = nullptr;
 }
 
 //-----------------------------------------------------------------------------
-/*! \brief Initiallize the Application
+/*! \brief Constructor
 
   \param argc  argument count passed from `main` program
   \param argv  argument vector passed from `main` program
-  \returns 0 on success and 1 on failure
 
   Only a few \glos{CBMmain} operation parameters are set via Init().
   These operation parameters are determined (in that order)
@@ -127,7 +93,6 @@ Application::~Application() {
   - setup signal catcher for `SIGSEGV` and `SIGBUS` (see SignalCatcher())
   - process startup options
   - startup Monitor (which starts "Cbm:monitor" thread)
-  - create SystemProxy
 
   If any of these steps fails, Init() will write a message with severity
   `Fatal` to Logger and return with a return code of 1. The only thing
@@ -144,7 +109,12 @@ Application::~Application() {
     as the very first thing of Init(), before the Logger is started,
  */
 
-int Application::Init(int argc, char* argv[]) {
+Application::Application(int argc, char* argv[]) :
+  fpLogger(),
+  fpMonitor(),
+  fOptMapOpen(),
+  fOptMapDone()
+{
   // setup signal block mask -------------------------------
   //  All threads will inherit this configuration !
   //  This MUST be done BEFORE any other threads are started !!
@@ -158,7 +128,7 @@ int Application::Init(int argc, char* argv[]) {
   if (auto irc = sigprocmask(SIG_BLOCK, &sigmask, nullptr); irc < 0) {
     cerr << "Cbm Application::Init: sigprocmask failed: " << ::strerror(errno)
          << endl;
-    return 1;
+    return;
   }
 
   // process command line options --------------------------
@@ -185,7 +155,7 @@ int Application::Init(int argc, char* argv[]) {
          << "  Default for all LogLevels is Info\n"
          << "  Valid LogLevels are: Trace, Debug, Info, Note, Warning, "
          << " Error, Fatal" << endl;
-    return 1;
+    return;
   }
 
   // startup Logger ----------------------------------------
@@ -228,7 +198,7 @@ int Application::Init(int argc, char* argv[]) {
       CBMLOGFAT1("cid=__Application", "Init-badmoni")
         << "Cbm Application::Init: --monitor failed: " << e.what();
       cerr << "Cbm Application::Init: --monitor failed: " << e.what() << endl;
-      return 1;
+      return;
     }
   }
 
@@ -241,10 +211,8 @@ int Application::Init(int argc, char* argv[]) {
     CBMLOGFAT1("cid=__Application", "Init-badargs")
       << "Cbm Application::Init: unknown options:" << badargs;
     cerr << "Cbm Application::Init: unknown options:" << badargs << endl;
-    return 1;
+    return;
   }
-
-  return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -375,10 +343,5 @@ void Application::ConnectSignalCatcher(int signum) {
        << "Cbm CRASHED - calling std::abort (will core dump)" << endl;
   ::abort();
 }
-
-//-----------------------------------------------------------------------------
-// define static member variables
-
-Application* Application::fpSingleton = nullptr;
 
 } // end namespace cbm

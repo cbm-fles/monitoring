@@ -19,19 +19,12 @@ using namespace std;
 class Application {
   public:
 
-                    Application();
+                    Application(int argc, char* argv[]);
                     ~Application();
-
-  int               Init(int argc, char* argv[]);
 
   bool              TstOpt(const string& opt);
   const string&     GetOptString(const string& opt, const string& def);
   int               GetOptInt(const string& opt, int def);
-
-  const string&     ProgName() const;
-
-  static Application&   Ref();
-  static Application*   Ptr();
 
   private:
   void              ConnectSignalCatcher(int signum);
@@ -42,12 +35,8 @@ class Application {
   unique_ptr<Monitor>        fpMonitor;     //!< unique_ptr of Monitor
   unordered_map<string,string> fOptMapOpen; //!< options still open
   unordered_map<string,string> fOptMapDone; //!< options alread processed
-  string            fProgName;              //!< program name
-  static Application*   fpSingleton;            //!< \glos{singleton} this
 };
 
 } // end namespace cbm
-
-#include "Application.ipp"
 
 #endif
