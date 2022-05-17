@@ -55,7 +55,7 @@ LoggerSinkSyslog::LoggerSinkSyslog(Logger& logger, const string& path,
   fSevMap[Logger::kLogFatal]   = LOG_ERR;       // EMERG is too noisy !
 
   // open syslog connection: use facility 'local1'
-  ::openlog("dca", LOG_PID, LOG_LOCAL1);
+  ::openlog("cbm", LOG_PID, LOG_LOCAL1);
 }
 
 //-----------------------------------------------------------------------------

@@ -2,8 +2,8 @@
 // (C) Copyright 2021 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-#ifndef included_Dca_Monitor
-#define included_Dca_Monitor 1
+#ifndef included_Cbm_Monitor
+#define included_Cbm_Monitor 1
 
 #include "ChronoDefs.hpp"
 #include "FileDescriptor.hpp"

@@ -29,9 +29,9 @@ namespace cbm {
 using namespace std;
 
 /*! \class Context
-  \brief Execution context of a \glos{DCAmain} program.
+  \brief Execution context of a \glos{CBMmain} program.
 
-  This class holds the complete execution context of a \glos{DCAmain}:
+  This class holds the complete execution context of a \glos{CBMmain}:
   - controls via the Init() method the initialization and instantiates
     - the Logger facility
     - the Monitor facility
@@ -40,15 +40,15 @@ using namespace std;
     crash_ via `SIGSEGV` and `SIGBUS` (see SignalCatcher())
 
   A call to EventLoop() starts the \glos{RPC} execution environment, which
-  in turn will start all other activities in a DCA.
+  in turn will start all other activities in a CBM.
 
-  A \glos{DCAmain} program is a thin wrapper for Context.
-  See \glos{DCAmain} for further details.
+  A \glos{CBMmain} program is a thin wrapper for Context.
+  See \glos{CBMmain} for further details.
 
   \note Context is a \glos{singleton}, only one instance is allowed per process.
 
   \note On \ref objectownership
-    - is owned by \glos{DCAmain}
+    - is owned by \glos{CBMmain}
     - owns Logger
     - owns Monitor
  */
@@ -61,7 +61,7 @@ using namespace std;
 //! \brief Prints last chance error messages to `cout`
 
 static void SysCallErr(const char* what) {
-  cerr << "Dca Context::SignalCatcher: "s << what << " FAILED: "
+  cerr << "Cbm Context::SignalCatcher: "s << what << " FAILED: "
        << strerror(errno) << endl;
 }
 
@@ -88,7 +88,7 @@ Context::Context() :
 //-----------------------------------------------------------------------------
 /*! \brief Destructor
 
-  This is the central place for the controlled shutdown of a \glos{DCAmain}. It
+  This is the central place for the controlled shutdown of a \glos{CBMmain}. It
   - this stops all concurrent activities like queued and scheduled actions
   - destructs the Monitor
   - and finally destructs the Logger
@@ -96,9 +96,9 @@ Context::Context() :
 
 Context::~Context() {
   // control destruction sequence
-  if (fpLogger) DCALOGNOT1("cid=__Context", "DCA-end") // the last log message
-                  << "DCA finished";
-  cout << "Dca finished" << endl;           // stdout message (for systemd)
+  if (fpLogger) CBMLOGNOT1("cid=__Context", "CBM-end") // the last log message
+                  << "CBM finished";
+  cout << "Cbm finished" << endl;           // stdout message (for systemd)
 
   timespec dt{0,200000000};                 // allow logger + monitor to process
   ::nanosleep(&dt, nullptr);                //   pending messages
@@ -115,23 +115,23 @@ Context::~Context() {
   \param argv  argument vector passed from `main` program
   \returns 0 on success and 1 on failure
 
-  Only a few \glos{DCAmain} operation parameters are set via Init().
+  Only a few \glos{CBMmain} operation parameters are set via Init().
   These operation parameters are determined (in that order)
   - by a default value
   - by a command line option of the form: `--<option> <value>`
-  - by an environment variable with a name: `DCA_<OPTION>`
+  - by an environment variable with a name: `CBM_<OPTION>`
 
   The Init sequence is
   - set process-wide signal block mask (see note below)
-  - startup Logger (which starts "Dca:logger" thread)
+  - startup Logger (which starts "Cbm:logger" thread)
   - setup signal catcher for `SIGSEGV` and `SIGBUS` (see SignalCatcher())
   - process startup options
-  - startup Monitor (which starts "Dca:monitor" thread)
+  - startup Monitor (which starts "Cbm:monitor" thread)
   - create SystemProxy
 
   If any of these steps fails, Init() will write a message with severity
   `Fatal` to Logger and return with a return code of 1. The only thing
-  the \glos{DCAmain} program can do in that case is to return with an exit
+  the \glos{CBMmain} program can do in that case is to return with an exit
   code 1.
 
   \note
@@ -156,7 +156,7 @@ int Context::Init(int argc, char* argv[]) {
   sigaddset(&sigmask, SIGHUP);
 
   if (auto irc = sigprocmask(SIG_BLOCK, &sigmask, nullptr); irc < 0) {
-    cerr << "Dca Context::Init: sigprocmask failed: " << ::strerror(errno)
+    cerr << "Cbm Context::Init: sigprocmask failed: " << ::strerror(errno)
          << endl;
     return 1;
   }
@@ -176,7 +176,7 @@ int Context::Init(int argc, char* argv[]) {
 
   // look for --help or -h, if found, print help message and quit
   if (TstOpt("--help"s) || TstOpt("-h"s)) {
-    cerr << "usage: dca [OPTION]...\n"
+    cerr << "usage: cbm [OPTION]...\n"
          << "  Options:\n"
          << "    --help                print help and exit\n"
          << "    --nosyslog            no syslog: Logger sink\n"
@@ -192,7 +192,7 @@ int Context::Init(int argc, char* argv[]) {
   fpLogger = make_unique<Logger>();
   // set main thread name, for convenience (e.g. for top 'H' display)
   // done here so that Logger can pickup the program name with PThreadName()
-  SetPThreadName("Dca:main");
+  SetPThreadName("Cbm:main");
 
   if (TstOpt("--nosyslog"s)) {
     fpLogger->OpenSink("file:cout", Logger::kLogWarning);
@@ -202,13 +202,13 @@ int Context::Init(int argc, char* argv[]) {
 
   string logsinkname = "";
   if (TstOpt("--logfile"s)) {
-    // open sink file:dca_YYYY-MM-DD_HH_MM_SS_<hostname>.log
+    // open sink file:cbm_YYYY-MM-DD_HH_MM_SS_<hostname>.log
     string timestamp = TimeStamp();
     timestamp.replace(10,1, "_"s);
     timestamp.replace(13,1, "_"s);
     timestamp.replace(16,1, "_"s);
     timestamp.replace(19,7, ""s);
-    logsinkname = fmt::format("file:dca_{}_{}.log", timestamp,
+    logsinkname = fmt::format("file:cbm_{}_{}.log", timestamp,
                               fpLogger->HostName());
     fpLogger->OpenSink(logsinkname, Logger::kLogTrace);
   }
@@ -225,9 +225,9 @@ int Context::Init(int argc, char* argv[]) {
       fpMonitor->OpenSink(monipath);
       fpLogger->OpenSink("monitor:"s, Logger::kLogNote);
     } catch (const exception& e) {
-      DCALOGFAT1("cid=__Context", "Init-badmoni")
-        << "Dca Context::Init: --monitor failed: " << e.what();
-      cerr << "Dca Context::Init: --monitor failed: " << e.what() << endl;
+      CBMLOGFAT1("cid=__Context", "Init-badmoni")
+        << "Cbm Context::Init: --monitor failed: " << e.what();
+      cerr << "Cbm Context::Init: --monitor failed: " << e.what() << endl;
       return 1;
     }
   }
@@ -238,9 +238,9 @@ int Context::Init(int argc, char* argv[]) {
     for (auto& [opt, val]: fOptMapOpen)
       badargs += fmt::format(" {} {}"s, opt, val);
 
-    DCALOGFAT1("cid=__Context", "Init-badargs")
-      << "Dca Context::Init: unknown options:" << badargs;
-    cerr << "Dca Context::Init: unknown options:" << badargs << endl;
+    CBMLOGFAT1("cid=__Context", "Init-badargs")
+      << "Cbm Context::Init: unknown options:" << badargs;
+    cerr << "Cbm Context::Init: unknown options:" << badargs << endl;
     return 1;
   }
 
@@ -306,12 +306,12 @@ void Context::ConnectSignalCatcher(int signum) {
   make it available for later diagnosis. This handler
   - creates an error message with signal and backtrace information
   - writes this message to a file named with a name of the form
-    `dca_crash_yyyy-mm-ddThh:mm:ss.ssssss_<hostname>.log`
+    `cbm_crash_yyyy-mm-ddThh:mm:ss.ssssss_<hostname>.log`
     into the current working directory
   - writes this message to Logger with severity _Fatal_
   - and calls abort() which typically will create a `core` dump
 
-  \note the `dca` should be linked with `-rdynamic` to ensure that
+  \note the `cbm` should be linked with `-rdynamic` to ensure that
     the backtrace has symbol information and not only addresses.
   \note the message has the backtrace in `mangled` form. Use `c++filt`
     to `demangle` the symbols and get them more readable.
@@ -342,12 +342,12 @@ void Context::ConnectSignalCatcher(int signum) {
     }
   }
   ::free(btsym);
-  msg << "\nDca CRASHED - core dump requested\n";
+  msg << "\nCbm CRASHED - core dump requested\n";
 
-  // Write dca_crash_yyyy-mm-ddThh:mm:ss.ssssss_<hostname>.log file in local dir
+  // Write cbm_crash_yyyy-mm-ddThh:mm:ss.ssssss_<hostname>.log file in local dir
   char hname[80] = {};
   if (auto rc = ::gethostname(hname, sizeof(hname)); rc < 0) hname[0] = 0;
-  string fname = fmt::format("dca_crash_{}_{}.log", TimeStamp(), hname);
+  string fname = fmt::format("cbm_crash_{}_{}.log", TimeStamp(), hname);
   auto fd = ::open(fname.c_str(), O_CREAT|O_WRONLY, S_IRUSR|S_IWUSR|S_IRGRP);
   if (fd > 0) {
     string str = msg.str();
@@ -362,17 +362,17 @@ void Context::ConnectSignalCatcher(int signum) {
   // is held. That can only happen if the problem is within the Logger code.
   // For `SIGSEGV` in \glos{DObject} code and `SIGBUS` in PCIe access code this
   // should always work, and that are the cases this reporting is made for.
-  if (PThreadName() != "Dca:logger") {
-    DCALOGFAT1("cid=__Context", "SignalCatcher") << msg.str();
+  if (PThreadName() != "Cbm:logger") {
+    CBMLOGFAT1("cid=__Context", "SignalCatcher") << msg.str();
     timespec dt{0, 200000000};
     if (::nanosleep(&dt, nullptr) < 0) SysCallErr("nanosleep");
   } else {
-    cerr << "Dca Context::SignalCatcher:" << msg.str() << endl;
+    cerr << "Cbm Context::SignalCatcher:" << msg.str() << endl;
   }
 
   // finally call abort, which creates a core dump
-  cerr << "Dca CRASHED - backtrace in " << fname << "\n"
-       << "Dca CRASHED - calling std::abort (will core dump)" << endl;
+  cerr << "Cbm CRASHED - backtrace in " << fname << "\n"
+       << "Cbm CRASHED - calling std::abort (will core dump)" << endl;
   ::abort();
 }
 

@@ -2,8 +2,8 @@
 // (C) Copyright 2021 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-#ifndef included_Dca_MonitorSinkFile
-#define included_Dca_MonitorSinkFile 1
+#ifndef included_Cbm_MonitorSinkFile
+#define included_Cbm_MonitorSinkFile 1
 
 #include "MonitorSink.hpp"
 

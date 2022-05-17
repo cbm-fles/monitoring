@@ -2,8 +2,8 @@
 // (C) Copyright 2020-2022 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-#ifndef included_Dca_Logger
-#define included_Dca_Logger 1
+#ifndef included_Cbm_Logger
+#define included_Cbm_Logger 1
 
 #include "FileDescriptor.hpp"
 #include "LoggerMessage.hpp"
@@ -94,28 +94,28 @@ class Logger {
 } // end namespace cbm
 
 // framework macros, usually not used directly
-#define DCALOG(sel,sev,keys1,mid,keys2) \
+#define CBMLOG(sel,sev,keys1,mid,keys2) \
   if (sel) Logger::Ref().MakeStream(sev, keys1, mid, keys2).Stream()
-#define DCALOGGEN(sev,mid,keys) DCALOG(sev>=LogLevel(), sev, LogKeys(),mid,keys)
-#define DCALOGGEN1(sev,mid,keys) DCALOG(true, sev, LogKeys(),mid,keys)
+#define CBMLOGGEN(sev,mid,keys) CBMLOG(sev>=LogLevel(), sev, LogKeys(),mid,keys)
+#define CBMLOGGEN1(sev,mid,keys) CBMLOG(true, sev, LogKeys(),mid,keys)
 // for looging when LogLevel() and LogKeys() available, e.g. DClass'es
-#define DCALOGFAT(mid,keys) DCALOGGEN1(Logger::kLogFatal, mid, keys)
-#define DCALOGERR(mid,keys) DCALOGGEN(Logger::kLogError, mid, keys)
-#define DCALOGWAR(mid,keys) DCALOGGEN(Logger::kLogWarning, mid, keys)
-#define DCALOGNOT(mid,keys) DCALOGGEN(Logger::kLogNote, mid, keys)
-#define DCALOGINF(mid,keys) DCALOGGEN(Logger::kLogInfo, mid, keys)
-#define DCALOGDEB(mid,keys) DCALOGGEN(Logger::kLogDebug, mid, keys)
-#define DCALOGTRA(mid,keys) DCALOGGEN(Logger::kLogTrace, mid, keys)
-#define DCALOGTRAOBJ(obj,mid,keys) \
-  DCALOG(Logger::kLogTrace>=(obj).LogLevel(), Logger::kLogTrace, \
+#define CBMLOGFAT(mid,keys) CBMLOGGEN1(Logger::kLogFatal, mid, keys)
+#define CBMLOGERR(mid,keys) CBMLOGGEN(Logger::kLogError, mid, keys)
+#define CBMLOGWAR(mid,keys) CBMLOGGEN(Logger::kLogWarning, mid, keys)
+#define CBMLOGNOT(mid,keys) CBMLOGGEN(Logger::kLogNote, mid, keys)
+#define CBMLOGINF(mid,keys) CBMLOGGEN(Logger::kLogInfo, mid, keys)
+#define CBMLOGDEB(mid,keys) CBMLOGGEN(Logger::kLogDebug, mid, keys)
+#define CBMLOGTRA(mid,keys) CBMLOGGEN(Logger::kLogTrace, mid, keys)
+#define CBMLOGTRAOBJ(obj,mid,keys) \
+  CBMLOG(Logger::kLogTrace>=(obj).LogLevel(), Logger::kLogTrace, \
          (obj).LogKeys(), mid, keys)
 // for looging unconditionally when LogKeys() availabke 
-#define DCALOGERRI(mid,keys) DCALOGGEN1(Logger::kLogError, mid, keys)
-#define DCALOGNOTI(mid,keys) DCALOGGEN1(Logger::kLogNote, mid, keys)
+#define CBMLOGERRI(mid,keys) CBMLOGGEN1(Logger::kLogError, mid, keys)
+#define CBMLOGNOTI(mid,keys) CBMLOGGEN1(Logger::kLogNote, mid, keys)
 // for looging unconditionally without LogKeys() 
-#define DCALOGFAT1(keys1,mid) DCALOG(true, Logger::kLogFatal, keys1, mid, "")
-#define DCALOGERR1(keys1,mid) DCALOG(true, Logger::kLogError, keys1, mid, "")
-#define DCALOGNOT1(keys1,mid) DCALOG(true, Logger::kLogNote, keys1, mid, "")
+#define CBMLOGFAT1(keys1,mid) CBMLOG(true, Logger::kLogFatal, keys1, mid, "")
+#define CBMLOGERR1(keys1,mid) CBMLOG(true, Logger::kLogError, keys1, mid, "")
+#define CBMLOGNOT1(keys1,mid) CBMLOG(true, Logger::kLogNote, keys1, mid, "")
 
 #include "Logger.ipp"
 

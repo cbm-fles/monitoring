@@ -22,11 +22,11 @@ using namespace std;
 
   The method sets the thread name to `tname`. This name has no operational
   relevance and is only used in tools accessing them via `/proc`, like `top`.
-  By convention the thread names of a \glos{DCAmain} start with "Dca:".
-  This allows for example to identify the threads of a \glos{DCA} in a threads
+  By convention the thread names of a \glos{CBMmain} start with "Cbm:".
+  This allows for example to identify the threads of a \glos{CBM} in a threads
   view display of `top` (`H` mode).
 
-  Worker instances set the thread name by convention to "Dca:" + \glos{workerid}.
+  Worker instances set the thread name by convention to "Cbm:" + \glos{workerid}.
 
   \note The Linux kernel limits the thread name length to 16 characters.
     `tname` will be truncated if longer.

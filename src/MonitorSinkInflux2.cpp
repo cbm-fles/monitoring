@@ -52,15 +52,15 @@ static const size_t kSendChunkSize = 2000000;   // send chunk size
   \param monitor back reference to Monitor
   \param path write endpoint as `host:[port]:[bucket]:[token]`
   \throws Exception if `path` does not contain 4 fields
-  \throws Exception if `token` in `path` is empty and DCA_INFLUX_TOKEN undefined
+  \throws Exception if `token` in `path` is empty and CBM_INFLUX_TOKEN undefined
 
   Write metrics to an InfluxDB V2 accessed via HTTP and an endpoint defined
   by `path`:
   - `host`: host name of server
   - `port`: port number of influxdb service (default: '8086')
-  - `bucket`: Influx bucket name (default: 'dca')
+  - `bucket`: Influx bucket name (default: 'cbm')
   - `token`: Influx access token. If empty taken from the environment
-             variable `DCA_INFLUX_TOKEN`
+             variable `CBM_INFLUX_TOKEN`
 
   The sink uses the V2 API `/api/v2/write` endpoint. The organisation is
   hardcode to "CBM" via `?org=CBM`.
@@ -80,12 +80,12 @@ MonitorSinkInflux2::MonitorSinkInflux2(Monitor& monitor, const string& path) :
   fBucket = match[3].str();
   fToken = match[4].str();
   if (fPort.size() == 0) fPort = "8086";
-  if (fBucket.size() == 0) fBucket = "dca";
+  if (fBucket.size() == 0) fBucket = "cbm";
   if (fToken.size() == 0) {
-    auto pchar = ::getenv("DCA_INFLUX_TOKEN");
+    auto pchar = ::getenv("CBM_INFLUX_TOKEN");
     if (pchar == nullptr)
       throw Exception("MonitorSinkInflux2::ctor:"
-                      " no token given and DCA_INFLUX_TOKEN not defined");
+                      " no token given and CBM_INFLUX_TOKEN not defined");
     fToken = string(pchar);
   }
 }
@@ -159,7 +159,7 @@ void MonitorSinkInflux2::SendData(const string& msg) {
     http::request<http::string_body> req{http::verb::post, target, version};
     req.set(http::field::host, fHost);
     req.set(http::field::authorization, "Token "s + fToken);
-    req.set(http::field::user_agent, "DCA-Monitor");
+    req.set(http::field::user_agent, "CBM-Monitor");
     req.set(http::field::accept, "application/json");
     req.set(http::field::content_type, "text/plain; charset=utf-8");
     req.set(http::field::content_length, to_string(msg.size()));
@@ -196,7 +196,7 @@ void MonitorSinkInflux2::SendData(const string& msg) {
       if (!ebody.empty() && ebody[ebody.size()-1] == '\n')
         ebody.erase(ebody.size()-1);
 
-      DCALOGERR1("cid=__Monitor", "SendData-err")
+      CBMLOGERR1("cid=__Monitor", "SendData-err")
         << "sinkname=" << fSinkPath
         << ", HTTP status=" << res.result_int() << " " << res.reason()
         << ", HTTP fields=" << efields
@@ -221,7 +221,7 @@ void MonitorSinkInflux2::SendData(const string& msg) {
     // If we get here then the connection is closed gracefully
   }
   catch(exception const& e) {
-    DCALOGERR1("cid=__Monitor", "SendData-err")
+    CBMLOGERR1("cid=__Monitor", "SendData-err")
       << "sinkname=" << fSinkPath << ", error=" << e.what();
     return;
   }

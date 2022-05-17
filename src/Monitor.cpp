@@ -25,12 +25,12 @@ using namespace std;
 using namespace std::chrono_literals;
 
 /*! \class Monitor
-  \brief Thread-safe metric monitor system for DCA
+  \brief Thread-safe metric monitor system for CBM
 
-  This class provides a thread-safe metric monitor for the DCA framework.
+  This class provides a thread-safe metric monitor for the CBM framework.
   The Monitor is instantiated as a \glos{singleton} in Context right after
   Logger is up and is destroyed as 2nd last step prior to Logger, and is
-  therefore available for \glos{DObject}s in a \glos{DCAmain} throughout
+  therefore available for \glos{DObject}s in a \glos{CBMmain} throughout
   the whole lifetime.
 
   The Monitor system has two layers
@@ -73,7 +73,7 @@ using namespace std::chrono_literals;
     - is owned by Context
 
   \note **Implementation notes**
-  - the Monitor uses a worker thread named "Dca:monitor" and a `mutex` to
+  - the Monitor uses a worker thread named "Cbm:monitor" and a `mutex` to
     protect the metric queue. The code sequences executed under `mutex` lock
     use `std::move` and are absolutely minimal, contention when locking the
     `mutex` is thus very unlikely:
@@ -91,7 +91,7 @@ static constexpr scduration kHeartbeat = 60s;   // heartbeat interval
   \throws SysCallException in case a system calls fails
 
   Initializes the Monitor \glos{singleton} and creates a work thread with
-  the name "Dca:monitor" for processing the metrics.
+  the name "Cbm:monitor" for processing the metrics.
  */
 
 Monitor::Monitor() {
@@ -300,7 +300,7 @@ void Monitor::EventLoop() {
   using namespace std::chrono_literals;
 
   // set worker thread name, for convenience (e.g. for top 'H' display)
-  SetPThreadName("Dca:monitor");
+  SetPThreadName("Cbm:monitor");
 
   pollfd polllist[1];
   polllist[0] = pollfd{fEvtFd, POLLIN, 0};

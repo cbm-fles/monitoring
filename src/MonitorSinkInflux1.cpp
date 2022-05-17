@@ -55,7 +55,7 @@ static const size_t kSendChunkSize = 2000000;   // send chunk size
   by `path`:
   - `host`: host name of server
   - `port`: port number of influxdb service (default '8086')
-  - `db`: Influx database name (default 'dca')
+  - `db`: Influx database name (default 'cbm')
 
   The sink uses the V1 API `/write` endpoint. It can be used with InfluxDB 1.8.
  */
@@ -72,7 +72,7 @@ MonitorSinkInflux1::MonitorSinkInflux1(Monitor& monitor, const string& path) :
   fPort = match[2].str();
   fDB = match[3].str();
   if (fPort.size() == 0) fPort = "8086";
-  if (fDB.size() == 0) fDB = "dca";
+  if (fDB.size() == 0) fDB = "cbm";
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void MonitorSinkInflux1::SendData(const string& msg) {
     int version = 11;
     http::request<http::string_body> req{http::verb::post, target, version};
     req.set(http::field::host, fHost);
-    req.set(http::field::user_agent, "DCA-Monitor");
+    req.set(http::field::user_agent, "CBM-Monitor");
     req.set(http::field::content_type, "text/plain");
     req.set(http::field::content_length, to_string(msg.size()));
     req.body() = msg;
@@ -179,7 +179,7 @@ void MonitorSinkInflux1::SendData(const string& msg) {
       if (!ebody.empty() && ebody[ebody.size()-1] == '\n')
         ebody.erase(ebody.size()-1);
 
-      DCALOGERR1("cid=__Monitor", "SendData-err")
+      CBMLOGERR1("cid=__Monitor", "SendData-err")
         << "sinkname=" << fSinkPath
         << ", HTTP status=" << res.result_int() << " " << res.reason()
         << ", HTTP fields=" << efields
@@ -204,7 +204,7 @@ void MonitorSinkInflux1::SendData(const string& msg) {
     // If we get here then the connection is closed gracefully
   }
   catch(exception const& e) {
-    DCALOGERR1("cid=__Monitor", "SendData-err")
+    CBMLOGERR1("cid=__Monitor", "SendData-err")
       << "sinkname=" << fSinkPath << ", error=" << e.what();
     return;
   }

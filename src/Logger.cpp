@@ -22,12 +22,12 @@
 namespace cbm {
 
 /*! \class Logger
-  \brief Thread-safe logging system for DCA
+  \brief Thread-safe logging system for CBM
 
-  This class provides a thread-safe logging for the DCA framework.
+  This class provides a thread-safe logging for the CBM framework.
   The Logger is instantiated as a \glos{singleton} in Context as very first
   step and destroyed as very last step, and therefore available in a
-  \glos{DCAmain} throughout its whole lifetime.
+  \glos{CBMmain} throughout its whole lifetime.
 
   The Logger system has three layers
   - macros which provide a stream like interface to generate message
@@ -75,31 +75,31 @@ namespace cbm {
   severity filtering and environment key generation. Typical usage in
   a \glos{DObject}s is
   \code{.cpp}
-  DCALOGWAR("<mid>","") << "text: a1=" << a1 << ",a2=" << a2;
-  DCALOGWAR("<mid>","") << fmt::format("text: a1={},a2={}", a1, a2);
+  CBMLOGWAR("<mid>","") << "text: a1=" << a1 << ",a2=" << a2;
+  CBMLOGWAR("<mid>","") << fmt::format("text: a1={},a2={}", a1, a2);
   \endcode
 
   This example creates and writes a `Warning` level message only if the
   `LogLevel()` of the \glos{DObject} is at `kLogWarning` or less.
 
   In most cases the Logger is used in \glos{DClass} code via these macros:
-  - `DCALOGTRA(mid,keys)`: for `Warning`
-  - `DCALOGDEB(mid,keys)`: for `Debug`
-  - `DCALOGINF(mid,keys)`: for `Info`
-  - `DCALOGNOT(mid,keys)`: for `Note`
-  - `DCALOGWAR(mid,keys)`: for `Warning`
-  - `DCALOGERR(mid,keys)`: for `Error`
-  - `DCALOGFAT(mid,keys)`: for `Fatal`
-  - `DCALOGNOTI(mid,keys)`: for `Note` without \glos{loglevel} check
-  - `DCALOGGEN(sev,mid,keys)`: with severity as argument
-  - `DCALOGGEN1(sev,mid,keys)`: with severity as argument without
+  - `CBMLOGTRA(mid,keys)`: for `Warning`
+  - `CBMLOGDEB(mid,keys)`: for `Debug`
+  - `CBMLOGINF(mid,keys)`: for `Info`
+  - `CBMLOGNOT(mid,keys)`: for `Note`
+  - `CBMLOGWAR(mid,keys)`: for `Warning`
+  - `CBMLOGERR(mid,keys)`: for `Error`
+  - `CBMLOGFAT(mid,keys)`: for `Fatal`
+  - `CBMLOGNOTI(mid,keys)`: for `Note` without \glos{loglevel} check
+  - `CBMLOGGEN(sev,mid,keys)`: with severity as argument
+  - `CBMLOGGEN1(sev,mid,keys)`: with severity as argument without
                                 \glos{loglevel} check
 
   A set of interface macros for usage outside of \glos{DClass}es is also provided
-  - `DCALOGNOT1(keys1,mid)`: for `Note`
-  - `DCALOGERR1(keys1,mid)`: for `Error`
-  - `DCALOGFAT1(keys1,mid)`: for `Fatal`
-  - `DCALOG(sel,sev,keys1,mid,keys2)`: allows full control of message
+  - `CBMLOGNOT1(keys1,mid)`: for `Note`
+  - `CBMLOGERR1(keys1,mid)`: for `Error`
+  - `CBMLOGFAT1(keys1,mid)`: for `Fatal`
+  - `CBMLOG(sel,sev,keys1,mid,keys2)`: allows full control of message
 
   For cases where one sequence of `operator<<()`s is not sufficient the
   low level interface provided by MakeStream() can be used directly.
@@ -132,7 +132,7 @@ namespace cbm {
   - the macros first evaluate the selection, and create message context and
     body only when the message is actually written. The `operator<<()` are
     only executed for messages passed on to the Logger core.
-  - the Logger uses a worker thread named "Dca:logger" and a `mutex` to
+  - the Logger uses a worker thread named "Cbm:logger" and a `mutex` to
     protect the message queue. The code sequences executed under `mutex` lock
     use `std::move` and are absolutely minimal, contention when locking the
     `mutex` is thus very unlikely:
@@ -146,7 +146,7 @@ namespace cbm {
   \throws SysCallException in case a system calls fails
 
   Initializes the Logger \glos{singleton} and creates a work thread with
-  the name "Dca:logger" for processing the messages.
+  the name "Cbm:logger" for processing the messages.
  */
 
 Logger::Logger() :
@@ -380,7 +380,7 @@ void Logger::Wakeup() {
 
 void Logger::EventLoop() {
   // set worker thread name, for convenience (e.g. for top 'H' display)
-  SetPThreadName("Dca:logger");
+  SetPThreadName("Cbm:logger");
 
   pollfd polllist[1];
   polllist[0] = pollfd{fEvtFd, POLLIN, 0};
@@ -440,7 +440,7 @@ Logger* Logger::fpSingleton = nullptr;
 
 //+++ Document the macros +++++++++++++++++++++++++++++++++++++++++++++++++++++
 /*!
-  \def DCALOG(sel,sev,keys1,mid,keys2)
+  \def CBMLOG(sel,sev,keys1,mid,keys2)
   \brief Writes a message under selector `sel` with severity `sev` and keys
   \param sel   selection expression, must return or convert to a `bool`
   \param sev   severity
@@ -454,12 +454,12 @@ Logger* Logger::fpSingleton = nullptr;
   - and expects that the message body is streamed in with an `operator<<()`
     without a trailing "\n" or `endl`
 
-  This macro is used by DCALOGGEN(sev,mid,keys), DCALOGGEN1(sev,mid,keys),
-  DCALOGNOT1(keys1,mid), DCALOGERR1(keys1,mid), and DCALOGFAT1(keys1,mid)
+  This macro is used by CBMLOGGEN(sev,mid,keys), CBMLOGGEN1(sev,mid,keys),
+  CBMLOGNOT1(keys1,mid), CBMLOGERR1(keys1,mid), and CBMLOGFAT1(keys1,mid)
   and usually not used directly.
 */
 /*!
-  \def DCALOGGEN(sev,mid,keys)
+  \def CBMLOGGEN(sev,mid,keys)
   \brief Writes a message if `sev` is `>=` the local `LogLevel()`
   \param sev   severity
   \param mid   \glos{messageid}
@@ -474,15 +474,15 @@ Logger* Logger::fpSingleton = nullptr;
   trailing "\n" or `endl`.
   Typical usage is
   \code{.cpp}
-  DCALOGGEN(Logger::kLogWarning,"<mid>","") << "text: a1=" << a1 << ",a2=" << a2;
+  CBMLOGGEN(Logger::kLogWarning,"<mid>","") << "text: a1=" << a1 << ",a2=" << a2;
   \endcode
 
-  This macro is used by DCALOGERR(mid,keys), DCALOGWAR(mid,keys),
-  DCALOGNOT(mid,keys), DCALOGINF(mid,keys), DCALOGDEB(mid,keys),
-  DCALOGTRA(mid,keys), and DCALOGTRAOBJ(obj,mid,keys) and rarely used directly.
+  This macro is used by CBMLOGERR(mid,keys), CBMLOGWAR(mid,keys),
+  CBMLOGNOT(mid,keys), CBMLOGINF(mid,keys), CBMLOGDEB(mid,keys),
+  CBMLOGTRA(mid,keys), and CBMLOGTRAOBJ(obj,mid,keys) and rarely used directly.
 */
 /*!
-  \def DCALOGGEN1(sev,mid,keys)
+  \def CBMLOGGEN1(sev,mid,keys)
   \brief Writes a message unconditionally
   \param sev   severity
   \param mid   \glos{messageid}
@@ -495,11 +495,11 @@ Logger* Logger::fpSingleton = nullptr;
   The message body must be streamed in with an `operator<<()` without a
   trailing "\n" or `endl`.
 
-  This macro is used by DCALOGNOTI(mid,keys) and DCALOGFAT(mid,keys)
+  This macro is used by CBMLOGNOTI(mid,keys) and CBMLOGFAT(mid,keys)
   and rarely used directly.
 */
 /*!
-  \def DCALOGERR(mid,keys)
+  \def CBMLOGERR(mid,keys)
   \brief Writes a `Error` level message if allowed by local `LogLevel()`
   \param mid   \glos{messageid}
   \param keys  secondary environment keys
@@ -515,62 +515,62 @@ Logger* Logger::fpSingleton = nullptr;
   trailing "\n" or `endl`.
   Typical usage is
   \code{.cpp}
-  DCALOGERR("<mid>","") << "text: a1=" << a1 << ",a2=" << a2;
+  CBMLOGERR("<mid>","") << "text: a1=" << a1 << ",a2=" << a2;
   \endcode
 */
 /*!
-  \def DCALOGWAR(mid,keys)
+  \def CBMLOGWAR(mid,keys)
   \brief Writes a `Warning` level message if allowed by local `LogLevel()`
 
-  Works like DCALOGERR(mid,keys), but creates a severity `Warning` message.
+  Works like CBMLOGERR(mid,keys), but creates a severity `Warning` message.
 */
 /*!
-  \def DCALOGNOT(mid,keys)
+  \def CBMLOGNOT(mid,keys)
   \brief Writes a `Note` level message if allowed by local `LogLevel()`
 
-  Works like DCALOGERR(mid,keys), but creates a severity `Note` message.
+  Works like CBMLOGERR(mid,keys), but creates a severity `Note` message.
 */
 /*!
-  \def DCALOGINF(mid,keys)
+  \def CBMLOGINF(mid,keys)
   \brief Writes a `Info` level message if allowed by local `LogLevel()`
 
-  Works like DCALOGERR(mid,keys), but creates a severity `Info` message.
+  Works like CBMLOGERR(mid,keys), but creates a severity `Info` message.
 */
 /*!
-  \def DCALOGDEB(mid,keys)
+  \def CBMLOGDEB(mid,keys)
   \brief Writes a `Debug` level message if allowed by local `LogLevel()`
 
-  Works like DCALOGERR(mid,keys), but creates a severity `Debug` message.
+  Works like CBMLOGERR(mid,keys), but creates a severity `Debug` message.
 */
 /*!
-  \def DCALOGTRA(mid,keys)
+  \def CBMLOGTRA(mid,keys)
   \brief Writes a `Trace` level message if allowed by local `LogLevel()`
 
-  Works like DCALOGERR(mid,keys), but creates a severity `Trace` message.
+  Works like CBMLOGERR(mid,keys), but creates a severity `Trace` message.
 */
 /*!
-  \def DCALOGFAT(mid,keys)
+  \def CBMLOGFAT(mid,keys)
   \brief Writes a `Fatal` level message unconditionally
 
-  Works like DCALOGERR(mid,keys), but unconditionally creates a severity 
+  Works like CBMLOGERR(mid,keys), but unconditionally creates a severity 
   `Fatal` message
 */
 /*!
-  \def DCALOGNOTI(mid,keys)
+  \def CBMLOGNOTI(mid,keys)
   \brief Writes a `Note` level message unconditionally
 
-  Works like DCALOGNOT(mid,keys), but bypasses the `LogLevel()` check.
+  Works like CBMLOGNOT(mid,keys), but bypasses the `LogLevel()` check.
   This macro is used for very essential status messages which should always
   be logged. It should be used sparingly.
 */
 /*!
-  \def DCALOGTRAOBJ(obj,mid,keys)
+  \def CBMLOGTRAOBJ(obj,mid,keys)
   \brief Writes a `Trace` level message using the context of another object.
   \param obj   reference to an object
   \param mid   \glos{messageid}
   \param keys  secondary environment keys
 
-  Works similar to DCALOGTRA(keys), but allows to use the context of another
+  Works similar to CBMLOGTRA(keys), but allows to use the context of another
   object `obj` for `LogLevel()` and `LogKeys()`.
   It expects that the methods `obj.LogLevel()` and `obj.LogKeys()` are defined.
   If severity `Trace` is compatile with `obj.LogLevel()` it creates a message
@@ -582,7 +582,7 @@ Logger* Logger::fpSingleton = nullptr;
 */
 
 /*!
-  \def DCALOGFAT1(keys1,mid)
+  \def CBMLOGFAT1(keys1,mid)
   \brief Writes unconditionally a severity `Fatal` message
   \param keys1 primary environment keys
   \param mid   \glos{messageid}
@@ -592,22 +592,22 @@ Logger* Logger::fpSingleton = nullptr;
   body is streamed in with an `operator<<()` without a trailing "\n" or `endl.`
   Typical usage is
   \code{.cpp}
-  DCALOGFAT1("cid_=<cid>","<mid>") << "text: a1=" << a1 << ",a2=" << a2;
+  CBMLOGFAT1("cid_=<cid>","<mid>") << "text: a1=" << a1 << ",a2=" << a2;
   \endcode
 
   Is used in situations were fault recovery is impossible.
 */
 /*!
-  \def DCALOGERR1(keys1,mid)
+  \def CBMLOGERR1(keys1,mid)
   \brief Writes unconditionally a severity `Error` message
-  Works like DCALOGFAT1(keys1,mid), but creates a severity `Error` message.
+  Works like CBMLOGFAT1(keys1,mid), but creates a severity `Error` message.
   This macro is used for very essential status messages which should always
   be logged. It should be used sparingly.
 */
 /*!
-  \def DCALOGNOT1(keys1,mid)
+  \def CBMLOGNOT1(keys1,mid)
   \brief Writes unconditionally a severity `Note` message
-  Works like DCALOGFAT1(keys1,mid), but creates a severity `Info` message.
+  Works like CBMLOGFAT1(keys1,mid), but creates a severity `Info` message.
   This macro is used for very essential status messages which should always
   be logged. It should be used sparingly.
 */

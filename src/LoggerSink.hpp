@@ -2,8 +2,8 @@
 // (C) Copyright 2020 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-#ifndef included_Dca_LoggerSink
-#define included_Dca_LoggerSink 1
+#ifndef included_Cbm_LoggerSink
+#define included_Cbm_LoggerSink 1
 
 #include "LoggerMessage.hpp"
 

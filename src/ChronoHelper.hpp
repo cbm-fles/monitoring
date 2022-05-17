@@ -2,8 +2,8 @@
 // (C) Copyright 2020-2021 GSI Helmholtzzentrum für Schwerionenforschung
 // Original author: Walter F.J. Mueller <w.f.j.mueller@gsi.de>
 
-#ifndef included_Dca_ChronoHelper
-#define included_Dca_ChronoHelper 1
+#ifndef included_Cbm_ChronoHelper
+#define included_Cbm_ChronoHelper 1
 
 #include "ChronoDefs.hpp"
 
