@@ -6,7 +6,6 @@
 
 #include "ChronoHelper.hpp"
 #include "Exception.hpp"
-#include "BuildInfo.hpp"
 #include "PThreadHelper.hpp"
 #include "SysCallException.hpp"
 
@@ -122,11 +121,6 @@ Context::~Context() {
   - by a command line option of the form: `--<option> <value>`
   - by an environment variable with a name: `DCA_<OPTION>`
 
-  The available options are
-  - `zport` : ZMQ port used for RPCs (default: kDefZPort)
-  - `zthreads` :  number of threads for ZMQ context (default: kDefZThreads)
-  - `objectloglevel`: default \glos{loglevel} for `DOjects` (default: Info)
-
   The Init sequence is
   - set process-wide signal block mask (see note below)
   - startup Logger (which starts "Dca:logger" thread)
@@ -185,27 +179,12 @@ int Context::Init(int argc, char* argv[]) {
     cerr << "usage: dca [OPTION]...\n"
          << "  Options:\n"
          << "    --help                print help and exit\n"
-         << "    --version             print version and exit\n"
          << "    --nosyslog            no syslog: Logger sink\n"
          << "    --logfile             open Logger sink to default filename\n"
          << "    --monitor SNAME       open Monitor sink to SNAME\n"
-         << "    --zport PORT          port for RPC port\n"
-         << "    --zthreads NTHREAD    number of threads for ZMQ context\n"
-         << "    --objectloglevel LVL  default LogLevel for DObjects\n"
          << "  Default for all LogLevels is Info\n"
          << "  Valid LogLevels are: Trace, Debug, Info, Note, Warning, "
          << " Error, Fatal" << endl;
-    return 1;
-  }
-
-  // look for --version or -v, if found, print version message and quit
-  if (TstOpt("--version"s) || TstOpt("-v"s)) {
-    auto buildinfo = BuildInfo();
-
-    cerr << fmt::format("Dca version: {}; build {} on {}",
-                        buildinfo["rtag"],
-                        buildinfo["rbranch"],
-                        buildinfo["bdate"]) << endl;
     return 1;
   }
 
@@ -252,11 +231,6 @@ int Context::Init(int argc, char* argv[]) {
       return 1;
     }
   }
-
-  // process startup options -------------------------------
-  int zport = 0;
-  int zthreads = 0;
-  int objectlvl = 0;
 
   // abort if any unexpected options found
   if (!fOptMapOpen.empty()) {
