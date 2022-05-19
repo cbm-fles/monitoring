@@ -143,7 +143,7 @@ void MonitorSinkInflux1::SendData(const string& msg) {
     int version = 11;
     http::request<http::string_body> req{http::verb::post, target, version};
     req.set(http::field::host, fHost);
-    req.set(http::field::user_agent, "CBM-Monitor");
+    req.set(http::field::user_agent, "Monitoring");
     req.set(http::field::content_type, "text/plain");
     req.set(http::field::content_length, to_string(msg.size()));
     req.body() = msg;

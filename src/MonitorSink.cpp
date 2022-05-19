@@ -99,6 +99,8 @@ string MonitorSink::InfluxFields(const Metric& point) {
     visit(overloaded {
         [&ss](bool arg) {                   // case bool
           ss << (arg ? "true" : "false"); },
+        [&ss](int arg) {                    // case int
+          ss << arg << "i";},
         [&ss](long arg) {                   // case long
           ss << arg << "i";},
         [&ss](unsigned long arg) {          // case unsigned long

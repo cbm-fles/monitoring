@@ -63,7 +63,7 @@ static const size_t kSendChunkSize = 2000000;   // send chunk size
              variable `CBM_INFLUX_TOKEN`
 
   The sink uses the V2 API `/api/v2/write` endpoint. The organisation is
-  hardcode to "CBM" via `?org=CBM`.
+  hardcoded to "CBM" via `?org=CBM`.
  */
 
 MonitorSinkInflux2::MonitorSinkInflux2(Monitor& monitor, const string& path) :
@@ -159,7 +159,7 @@ void MonitorSinkInflux2::SendData(const string& msg) {
     http::request<http::string_body> req{http::verb::post, target, version};
     req.set(http::field::host, fHost);
     req.set(http::field::authorization, "Token "s + fToken);
-    req.set(http::field::user_agent, "CBM-Monitor");
+    req.set(http::field::user_agent, "Monitor");
     req.set(http::field::accept, "application/json");
     req.set(http::field::content_type, "text/plain; charset=utf-8");
     req.set(http::field::content_length, to_string(msg.size()));

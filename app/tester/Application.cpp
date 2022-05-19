@@ -23,16 +23,21 @@ Application::Application(Parameters const& par) : par_(par) {
   }
 
   // start up Monitor --------------------------------------
+  monitor_ = std::make_unique<cbm::Monitor>();
   if (!par.monitor_uri.empty()) {
-    monitor_ = std::make_unique<cbm::Monitor>();
     monitor_->OpenSink(par.monitor_uri);
     logger_->OpenSink("monitor:", cbm::Logger::kLogNote);
+  } else {
+    monitor_->OpenSink("file:cout");
   }
 }
 
 void Application::run() {
   // do something
   CBMLOGERR1("cid=__Application", "CBM-1") << "Example error message 1";
+  cbm::Monitor::Ref().QueueMetric(
+      "demo_measurement", {{"hostname", "N/A"}},
+      {{"an_int", 17}, {"a_float", 1.7}, {"a_bool", true}});
 }
 
 Application::~Application() {

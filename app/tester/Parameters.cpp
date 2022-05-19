@@ -7,9 +7,6 @@
 namespace po = boost::program_options;
 
 Parameters::Parameters(int argc, char* argv[]) {
-  //  unsigned log_level = 2;
-  //  unsigned log_syslog = 2;
-
   po::options_description generic("Generic options");
   auto generic_add = generic.add_options();
   generic_add("help,h", "display this help and exit");
@@ -21,7 +18,7 @@ Parameters::Parameters(int argc, char* argv[]) {
   generic_add("monitor,m",
               po::value<std::string>(&monitor_uri)
                   ->value_name("<uri>")
-                  ->implicit_value("http://login:8086/"),
+                  ->implicit_value("influx1:login:8086:"),
               "publish status to InfluxDB");
 
   /*

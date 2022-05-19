@@ -17,8 +17,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Metric.hpp"
-
 namespace cbm {
 using namespace std;
 

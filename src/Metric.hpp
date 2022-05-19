@@ -16,7 +16,7 @@ namespace cbm {
 using namespace std;
 
 using MetricTagSet = vector<pair<string, string>>;
-using MetricField = variant<bool, long, unsigned long, double, string>;
+using MetricField = variant<bool, int, long, unsigned long, double, string>;
 using MetricFieldSet = vector<pair<string, MetricField>>;
 
 struct Metric {
