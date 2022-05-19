@@ -6,7 +6,8 @@ project(Monitoring VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS program_options)
+find_package(Threads REQUIRED)
 
 include(FetchContent)
 
@@ -19,3 +20,4 @@ FetchContent_MakeAvailable(fmtlib)
 # Adds fmt::fmt
 
 add_subdirectory(src)
+add_subdirectory(app/tester)

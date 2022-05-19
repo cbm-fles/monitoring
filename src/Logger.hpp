@@ -95,27 +95,27 @@ class Logger {
 
 // framework macros, usually not used directly
 #define CBMLOG(sel,sev,keys1,mid,keys2) \
-  if (sel) Logger::Ref().MakeStream(sev, keys1, mid, keys2).Stream()
+  if (sel) ::cbm::Logger::Ref().MakeStream(sev, keys1, mid, keys2).Stream()
 #define CBMLOGGEN(sev,mid,keys) CBMLOG(sev>=LogLevel(), sev, LogKeys(),mid,keys)
 #define CBMLOGGEN1(sev,mid,keys) CBMLOG(true, sev, LogKeys(),mid,keys)
 // for looging when LogLevel() and LogKeys() available, e.g. DClass'es
-#define CBMLOGFAT(mid,keys) CBMLOGGEN1(Logger::kLogFatal, mid, keys)
-#define CBMLOGERR(mid,keys) CBMLOGGEN(Logger::kLogError, mid, keys)
-#define CBMLOGWAR(mid,keys) CBMLOGGEN(Logger::kLogWarning, mid, keys)
-#define CBMLOGNOT(mid,keys) CBMLOGGEN(Logger::kLogNote, mid, keys)
-#define CBMLOGINF(mid,keys) CBMLOGGEN(Logger::kLogInfo, mid, keys)
-#define CBMLOGDEB(mid,keys) CBMLOGGEN(Logger::kLogDebug, mid, keys)
-#define CBMLOGTRA(mid,keys) CBMLOGGEN(Logger::kLogTrace, mid, keys)
+#define CBMLOGFAT(mid,keys) CBMLOGGEN1(::cbm::Logger::kLogFatal, mid, keys)
+#define CBMLOGERR(mid,keys) CBMLOGGEN(::cbm::Logger::kLogError, mid, keys)
+#define CBMLOGWAR(mid,keys) CBMLOGGEN(::cbm::Logger::kLogWarning, mid, keys)
+#define CBMLOGNOT(mid,keys) CBMLOGGEN(::cbm::Logger::kLogNote, mid, keys)
+#define CBMLOGINF(mid,keys) CBMLOGGEN(::cbm::Logger::kLogInfo, mid, keys)
+#define CBMLOGDEB(mid,keys) CBMLOGGEN(::cbm::Logger::kLogDebug, mid, keys)
+#define CBMLOGTRA(mid,keys) CBMLOGGEN(::cbm::Logger::kLogTrace, mid, keys)
 #define CBMLOGTRAOBJ(obj,mid,keys) \
-  CBMLOG(Logger::kLogTrace>=(obj).LogLevel(), Logger::kLogTrace, \
+  CBMLOG(::cbm::Logger::kLogTrace>=(obj).LogLevel(), ::cbm::Logger::kLogTrace, \
          (obj).LogKeys(), mid, keys)
 // for looging unconditionally when LogKeys() availabke 
-#define CBMLOGERRI(mid,keys) CBMLOGGEN1(Logger::kLogError, mid, keys)
-#define CBMLOGNOTI(mid,keys) CBMLOGGEN1(Logger::kLogNote, mid, keys)
+#define CBMLOGERRI(mid,keys) CBMLOGGEN1(::cbm::Logger::kLogError, mid, keys)
+#define CBMLOGNOTI(mid,keys) CBMLOGGEN1(::cbm::Logger::kLogNote, mid, keys)
 // for looging unconditionally without LogKeys() 
-#define CBMLOGFAT1(keys1,mid) CBMLOG(true, Logger::kLogFatal, keys1, mid, "")
-#define CBMLOGERR1(keys1,mid) CBMLOG(true, Logger::kLogError, keys1, mid, "")
-#define CBMLOGNOT1(keys1,mid) CBMLOG(true, Logger::kLogNote, keys1, mid, "")
+#define CBMLOGFAT1(keys1,mid) CBMLOG(true, ::cbm::Logger::kLogFatal, keys1, mid, "")
+#define CBMLOGERR1(keys1,mid) CBMLOG(true, ::cbm::Logger::kLogError, keys1, mid, "")
+#define CBMLOGNOT1(keys1,mid) CBMLOG(true, ::cbm::Logger::kLogNote, keys1, mid, "")
 
 #include "Logger.ipp"
 
