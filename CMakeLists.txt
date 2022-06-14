@@ -1,4 +1,6 @@
-# 2022-05-17, Jan de Cuveland
+# SPDX-License-Identifier: GPL-3.0-only
+# (C) Copyright 2022 Johann Wolfgang Goethe-Universität Frankfurt
+# Original author: Jan de Cuveland <cuveland@compeng.uni-frankfurt.de>
 
 cmake_minimum_required(VERSION 3.14)
 

@@ -1,4 +1,6 @@
-# 2022-05-17, Jan de Cuveland
+# SPDX-License-Identifier: GPL-3.0-only
+# (C) Copyright 2022 Johann Wolfgang Goethe-Universität Frankfurt
+# Original author: Jan de Cuveland <cuveland@compeng.uni-frankfurt.de>
 
 file(GLOB LIB_SOURCES *.cpp)
 file(GLOB LIB_HEADERS *.hpp)
@@ -15,3 +17,5 @@ target_link_libraries(monitoring
 )
 
 target_compile_features(monitoring PUBLIC cxx_std_17)
+
+#target_compile_options(monitoring PRIVATE -Wall -Wextra -Wpedantic)
