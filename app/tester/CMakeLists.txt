@@ -8,7 +8,7 @@ file(GLOB APP_HEADERS *.hpp)
 add_executable(tester ${APP_SOURCES} ${APP_HEADERS})
 
 target_link_libraries(tester
-  PUBLIC monitoring
+  PUBLIC logging
   PUBLIC Boost::boost
   PUBLIC Boost::program_options
 )

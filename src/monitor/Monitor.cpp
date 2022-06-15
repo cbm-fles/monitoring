@@ -105,6 +105,12 @@ Monitor::Monitor() {
     throw SysCallException("Monitor::ctor"s, "eventfd"s, errno);
   fEvtFd.Set(fd);
 
+  // get hostname
+  char hostname[80];
+  if (int rc = ::gethostname(hostname, sizeof(hostname)); rc < 0)
+    throw SysCallException("Monitor::ctor"s, "gethostname"s, errno);
+  fHostName = hostname;
+
   // init heartbeat sequence
   fNextHeartbeat = ScNow();
 

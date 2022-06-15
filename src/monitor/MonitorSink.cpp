@@ -5,7 +5,6 @@
 #include "MonitorSink.hpp"
 
 #include "ChronoHelper.hpp"
-#include "Logger.hpp"
 
 #include <algorithm>
 #include <iomanip>
@@ -73,9 +72,10 @@ string MonitorSink::EscapeString(const string& str) {
  */
 
 string MonitorSink::InfluxTags(const Metric& point) {
-  string res = "host="s + Logger::Ref().HostName();
+  string res;
   for (auto& tag: point.fTagset) {
-    res += "," + CleanString(tag.first) + "=" + CleanString(tag.second);
+    res += res.empty() ? "" : ",";
+    res += CleanString(tag.first) + "=" + CleanString(tag.second);
   }
   return res;
 }

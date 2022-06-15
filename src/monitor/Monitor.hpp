@@ -48,6 +48,8 @@ class Monitor {
                                 MetricTagSet&& tagset,
                                 MetricFieldSet&& fieldset,
                                 sctime_point timestamp = sctime_point());
+  const string&     HostName() const;
+
 
   static Monitor&   Ref();
   static Monitor*   Ptr();
@@ -71,6 +73,7 @@ class Monitor {
   thread            fThread {};             //!< worker thread
   metvec_t          fMetVec {};             //!< metric list
   mutex             fMetVecMutex {};        //!< mutex for fMetVec access
+  string            fHostName {""};         //!< hostname
   bool              fStopped {false};       //!< signals thread rundown
   smap_t            fSinkMap {};            //!< sink registry
   mutex             fSinkMapMutex {};       //!< mutex for fSinkMap access
