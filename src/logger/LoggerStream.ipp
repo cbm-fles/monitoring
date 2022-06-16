@@ -10,8 +10,6 @@ namespace cbm {
   Used in conjuction with `operator<<()` to write the message body.
  */
 
-inline ostream& LoggerStream::Stream() {
-  return fSStream;
-}
+inline ostream& LoggerStream::Stream() { return fSStream; }
 
 } // end namespace cbm

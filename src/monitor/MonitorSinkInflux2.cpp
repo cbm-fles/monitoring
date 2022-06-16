@@ -15,11 +15,11 @@
 // Boost 1.69, so Boost 1.71 (Ub focal) and 1.74 (Debian Bullseye work fine
 // without. See https://stackoverflow.com/questions/9723793/
 #define BOOST_ERROR_CODE_HEADER_ONLY
+#include <boost/asio/connect.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
-#include <boost/asio/connect.hpp>
-#include <boost/asio/ip/tcp.hpp>
 
 #include <iostream>
 #include <regex>
@@ -28,10 +28,10 @@
 
 namespace cbm {
 using namespace std;
-using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
-namespace http = boost::beast::http;    // from <boost/beast/http.hpp>
+using tcp = boost::asio::ip::tcp;    // from <boost/asio/ip/tcp.hpp>
+namespace http = boost::beast::http; // from <boost/beast/http.hpp>
 // some constants
-static const size_t kSendChunkSize = 2000000;   // send chunk size
+static const size_t kSendChunkSize = 2000000; // send chunk size
 
 /*! \class MonitorSinkInflux2
   \brief Monitor sink - concrete sink for InfluxDB V2 output
@@ -66,9 +66,8 @@ static const size_t kSendChunkSize = 2000000;   // send chunk size
   hardcoded to "CBM" via `?org=CBM`.
  */
 
-MonitorSinkInflux2::MonitorSinkInflux2(Monitor& monitor, const string& path) :
-  MonitorSink(monitor, path)
-{
+MonitorSinkInflux2::MonitorSinkInflux2(Monitor& monitor, const string& path)
+    : MonitorSink(monitor, path) {
   regex re_path(R"(^(.+?):([0-9]*?):(.*?):(.*)$)");
   smatch match;
   if (!regex_search(path.begin(), path.end(), match, re_path))
@@ -79,8 +78,10 @@ MonitorSinkInflux2::MonitorSinkInflux2(Monitor& monitor, const string& path) :
   fPort = match[2].str();
   fBucket = match[3].str();
   fToken = match[4].str();
-  if (fPort.size() == 0) fPort = "8086";
-  if (fBucket.size() == 0) fBucket = "cbm";
+  if (fPort.size() == 0)
+    fPort = "8086";
+  if (fBucket.size() == 0)
+    fBucket = "cbm";
   if (fToken.size() == 0) {
     auto pchar = ::getenv("CBM_INFLUX_TOKEN");
     if (pchar == nullptr)
@@ -102,12 +103,13 @@ void MonitorSinkInflux2::ProcessMetricVec(const vector<Metric>& metvec) {
     fStatNTag += met.fTagset.size();
     fStatNField += met.fFieldset.size();
     msg += InfluxLine(met) + "\n"s;
-    if (msg.size() > kSendChunkSize) {      // limit send chunk size
+    if (msg.size() > kSendChunkSize) { // limit send chunk size
       SendData(msg);
       msg.clear();
     }
   }
-  if (msg.size() > 0) SendData(msg);
+  if (msg.size() > 0)
+    SendData(msg);
 }
 
 //-----------------------------------------------------------------------------
@@ -115,9 +117,9 @@ void MonitorSinkInflux2::ProcessMetricVec(const vector<Metric>& metvec) {
  */
 
 void MonitorSinkInflux2::ProcessHeartbeat() {
-  Monitor::Ref().QueueMetric("Monitor",    // measurement
-                             {},           // no extra tags
-                             {{"points", fStatNPoint},    // fields
+  Monitor::Ref().QueueMetric("Monitor",                // measurement
+                             {},                       // no extra tags
+                             {{"points", fStatNPoint}, // fields
                               {"tags", fStatNTag},
                               {"fields", fStatNField},
                               {"sends", fStatNSend},
@@ -184,30 +186,29 @@ void MonitorSinkInflux2::SendData(const string& msg) {
     // Note in InfluxDB V1:
     //   returns a 204 -> "No Content" for successful completion
     //   returns a 404 -> "Not Found" if data base not existing
-    //   returns a 422 -> "Unprocessable entity" if request is ill-formed 
+    //   returns a 422 -> "Unprocessable entity" if request is ill-formed
     if (res.result_int() != 200 && res.result_int() != 204) { // allow 200 & 204
       string efields = "";
-      for(auto const& field : res) {
-        efields += string(field.name_string());         // C++17 string_view
-        efields += "=" + string(field.value()) + ";";   // limitation, grrr
+      for (auto const& field : res) {
+        efields += string(field.name_string());       // C++17 string_view
+        efields += "=" + string(field.value()) + ";"; // limitation, grrr
       }
-      string ebody = res.body();            // get body, trim \r and trailing \n
+      string ebody = res.body(); // get body, trim \r and trailing \n
       ebody.erase(std::remove(ebody.begin(), ebody.end(), '\r'), ebody.end());
-      if (!ebody.empty() && ebody[ebody.size()-1] == '\n')
-        ebody.erase(ebody.size()-1);
+      if (!ebody.empty() && ebody[ebody.size() - 1] == '\n')
+        ebody.erase(ebody.size() - 1);
 
 #if defined(CBMLOGERR1)
       CBMLOGERR1("cid=__Monitor", "SendData-err")
-        << "sinkname=" << fSinkPath
-        << ", HTTP status=" << res.result_int() << " " << res.reason()
-        << ", HTTP fields=" << efields
-        << ", HTTP body=" << ebody;
+          << "sinkname=" << fSinkPath << ", HTTP status=" << res.result_int()
+          << " " << res.reason() << ", HTTP fields=" << efields
+          << ", HTTP body=" << ebody;
 #else
       std::cerr << "MonitorSinkInflux2::SendData error: "
-        << "sinkname=" << fSinkPath
-        << ", HTTP status=" << res.result_int() << " " << res.reason()
-        << ", HTTP fields=" << efields
-        << ", HTTP body=" << ebody << "\n";
+                << "sinkname=" << fSinkPath
+                << ", HTTP status=" << res.result_int() << " " << res.reason()
+                << ", HTTP fields=" << efields << ", HTTP body=" << ebody
+                << "\n";
 #endif
     }
 
@@ -218,23 +219,22 @@ void MonitorSinkInflux2::SendData(const string& msg) {
     // not_connected happens sometimes
     // so don't bother reporting it.
     //
-    if(ec && ec != boost::system::errc::not_connected)
+    if (ec && ec != boost::system::errc::not_connected)
       throw boost::system::system_error{ec};
 
     // do stats
     fStatNSend += 1;
     fStatNByte += msg.size();
-    fStatSndTime  += ScTimeDiff2Double(tbeg, ScNow());
+    fStatSndTime += ScTimeDiff2Double(tbeg, ScNow());
 
     // If we get here then the connection is closed gracefully
-  }
-  catch(exception const& e) {
+  } catch (exception const& e) {
 #if defined(CBMLOGERR1)
     CBMLOGERR1("cid=__Monitor", "SendData-err")
-      << "sinkname=" << fSinkPath << ", error=" << e.what();      
+        << "sinkname=" << fSinkPath << ", error=" << e.what();
 #else
     std::cerr << "MonitorSinkInflux2::SendData error: "
-      << "sinkname=" << fSinkPath << ", error=" << e.what() << "\n";      
+              << "sinkname=" << fSinkPath << ", error=" << e.what() << "\n";
 #endif
     return;
   }

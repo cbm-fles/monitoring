@@ -13,22 +13,22 @@
 namespace cbm {
 using namespace std;
 
-class Logger;                               // forward declaration
+class Logger; // forward declaration
 
 class LoggerSink {
-  public:
-                    LoggerSink(Logger& logger, const string& path, int lvl);
-  virtual           ~LoggerSink() = default;
+public:
+  LoggerSink(Logger& logger, const string& path, int lvl);
+  virtual ~LoggerSink() = default;
 
-  virtual void      ProcessMessageVec(const vector<LoggerMessage>& msgvec) = 0;
+  virtual void ProcessMessageVec(const vector<LoggerMessage>& msgvec) = 0;
 
-  void              SetLogLevel(int lvl);
-  int               LogLevel() const;
+  void SetLogLevel(int lvl);
+  int LogLevel() const;
 
-  protected:
-  Logger&           fLogger;                //!< back reference to Logger
-  string            fSinkPath;              //!< path for output
-  int               fLogLevel;              //!< \glos{loglevel} for write
+protected:
+  Logger& fLogger;  //!< back reference to Logger
+  string fSinkPath; //!< path for output
+  int fLogLevel;    //!< \glos{loglevel} for write
 };
 
 } // end namespace cbm

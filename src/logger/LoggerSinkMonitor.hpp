@@ -11,13 +11,12 @@ namespace cbm {
 using namespace std;
 
 class LoggerSinkMonitor : public LoggerSink {
-  public:
-                    LoggerSinkMonitor(Logger& logger, const string& path,
-                                      int lvl);
+public:
+  LoggerSinkMonitor(Logger& logger, const string& path, int lvl);
 
-  virtual void      ProcessMessageVec(const vector<LoggerMessage>& msgvec);
+  virtual void ProcessMessageVec(const vector<LoggerMessage>& msgvec);
 
-  private:
+private:
 };
 
 } // end namespace cbm

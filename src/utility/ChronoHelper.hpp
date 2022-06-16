@@ -12,22 +12,21 @@
 namespace cbm {
 using namespace std;
 
-sctime_point        ScNow();
+sctime_point ScNow();
 
-string              TimePoint2String(const sctime_point& time);
-string              TimeStamp();
+string TimePoint2String(const sctime_point& time);
+string TimeStamp();
 
-long                ScDuration2Msec(const scduration& dur);
-long                ScDuration2Usec(const scduration& dur);
-long                ScDuration2Nsec(const scduration& dur);
-scduration          Msec2ScDuration(long msec);
-scduration          Usec2ScDuration(long usec);
-scduration          Nsec2ScDuration(long nsec);
-long                ScTimePoint2Nsec(const sctime_point& time);
-long                ScTimePoint2Nsec();
-sctime_point        Nsec2ScTimePoint(long nsec);
-double              ScTimeDiff2Double(const sctime_point& tbeg,
-                                      const sctime_point& tend);
+long ScDuration2Msec(const scduration& dur);
+long ScDuration2Usec(const scduration& dur);
+long ScDuration2Nsec(const scduration& dur);
+scduration Msec2ScDuration(long msec);
+scduration Usec2ScDuration(long usec);
+scduration Nsec2ScDuration(long nsec);
+long ScTimePoint2Nsec(const sctime_point& time);
+long ScTimePoint2Nsec();
+sctime_point Nsec2ScTimePoint(long nsec);
+double ScTimeDiff2Double(const sctime_point& tbeg, const sctime_point& tend);
 
 } // end namespace cbm
 

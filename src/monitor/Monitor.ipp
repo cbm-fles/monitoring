@@ -7,25 +7,18 @@ namespace cbm {
 //-----------------------------------------------------------------------------
 //! \brief Returns hostname used by Monitor
 
-inline const string& Monitor::HostName() const {
-  return fHostName;
-}
+inline const string& Monitor::HostName() const { return fHostName; }
 
 //-----------------------------------------------------------------------------
 //! \brief Static method which returns a reference of the
 //!  Monitor \glos{singleton}
 
-inline Monitor& Monitor::Ref() {
-  return *fpSingleton;
-}
+inline Monitor& Monitor::Ref() { return *fpSingleton; }
 
 //-----------------------------------------------------------------------------
 //! \brief Static method which returns a pointer to the
 //!  Monitor \glos{singleton}
 
-inline Monitor* Monitor::Ptr() {
-  return fpSingleton;
-}
+inline Monitor* Monitor::Ptr() { return fpSingleton; }
 
 } // end namespace cbm
-

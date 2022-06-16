@@ -16,15 +16,11 @@ using namespace std;
   \param str  will be used as what() string
  */
 
-Exception::Exception(const string& str) :
-  fString(str)
-{}
+Exception::Exception(const string& str) : fString(str) {}
 
 //-----------------------------------------------------------------------------
 //! \brief Returns what string as const char* (std::exception interface)
 
-const char* Exception::what() const noexcept {
-  return fString.c_str();
-}
+const char* Exception::what() const noexcept { return fString.c_str(); }
 
 } // end namespace cbm

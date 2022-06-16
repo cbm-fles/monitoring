@@ -10,18 +10,18 @@
 namespace cbm {
 using namespace std;
 
-string FmtD(long val, int width=1);
-string FmtD(int val, int width=1);
-string FmtD(short val, int width=1);
-string FmtD(char val, int width=1);
-string FmtD(unsigned long val, int width=1);
-string FmtD(unsigned int val, int width=1);
-string FmtD(unsigned short val, int width=1);
-string FmtD(unsigned char val, int width=1);
-string FmtX(unsigned long val, int width=1, int prec=1);
-string FmtB(unsigned long val, int width=1);
-string FmtF(double val, int width=5, int prec=2);
-string FmtE(double val, int width=12, int prec=6);
+string FmtD(long val, int width = 1);
+string FmtD(int val, int width = 1);
+string FmtD(short val, int width = 1);
+string FmtD(char val, int width = 1);
+string FmtD(unsigned long val, int width = 1);
+string FmtD(unsigned int val, int width = 1);
+string FmtD(unsigned short val, int width = 1);
+string FmtD(unsigned char val, int width = 1);
+string FmtX(unsigned long val, int width = 1, int prec = 1);
+string FmtB(unsigned long val, int width = 1);
+string FmtF(double val, int width = 5, int prec = 2);
+string FmtE(double val, int width = 12, int prec = 6);
 
 } // end namespace cbm
 

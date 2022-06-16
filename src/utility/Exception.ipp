@@ -4,11 +4,9 @@
 
 namespace cbm {
 using namespace std;
-  
+
 //-----------------------------------------------------------------------------
 //! \brief Returns what string std::string
-inline const string& Exception::What() const noexcept {
-  return fString;
-}
+inline const string& Exception::What() const noexcept { return fString; }
 
 } // end namespace cbm

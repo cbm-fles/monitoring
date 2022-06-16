@@ -27,7 +27,7 @@ using namespace std;
 
 string FmtD(long val, int width) {
   char buf[80];
-  (void) ::snprintf(buf, sizeof(buf), "%*ld", width, val);
+  (void)::snprintf(buf, sizeof(buf), "%*ld", width, val);
   return buf;
 }
 
@@ -42,7 +42,7 @@ string FmtD(long val, int width) {
 
 string FmtD(unsigned long val, int width) {
   char buf[80];
-  (void) ::snprintf(buf, sizeof(buf), "%*lu", width, val);
+  (void)::snprintf(buf, sizeof(buf), "%*lu", width, val);
   return buf;
 }
 
@@ -58,7 +58,7 @@ string FmtD(unsigned long val, int width) {
 
 string FmtX(unsigned long val, int width, int prec) {
   char buf[80];
-  (void) ::snprintf(buf, sizeof(buf), "%*.*lx", width, prec, val);
+  (void)::snprintf(buf, sizeof(buf), "%*.*lx", width, prec, val);
   return buf;
 }
 
@@ -73,11 +73,12 @@ string FmtX(unsigned long val, int width, int prec) {
 
 string FmtB(unsigned long val, int width) {
   string buf;
-  while(val) {
-    buf.insert(0, (val&0x1) ? "1" : "0");
-    val = val>>1;
+  while (val) {
+    buf.insert(0, (val & 0x1) ? "1" : "0");
+    val = val >> 1;
   }
-  for (size_t i=buf.length(); int(i)<width; i++) buf.insert(0, "0");
+  for (size_t i = buf.length(); int(i) < width; i++)
+    buf.insert(0, "0");
   return buf;
 }
 
@@ -93,7 +94,7 @@ string FmtB(unsigned long val, int width) {
 
 string FmtF(double val, int width, int prec) {
   char buf[80];
-  (void) ::snprintf(buf, sizeof(buf), "%*.*f", width, prec, val);
+  (void)::snprintf(buf, sizeof(buf), "%*.*f", width, prec, val);
   return buf;
 }
 
@@ -109,7 +110,7 @@ string FmtF(double val, int width, int prec) {
 
 string FmtE(double val, int width, int prec) {
   char buf[80];
-  (void) ::snprintf(buf, sizeof(buf), "%*.*e", width, prec, val);
+  (void)::snprintf(buf, sizeof(buf), "%*.*e", width, prec, val);
   return buf;
 }
 

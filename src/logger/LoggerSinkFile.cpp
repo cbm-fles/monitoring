@@ -32,9 +32,8 @@ using namespace std;
   with different \glos{loglevel} settings.
  */
 
-LoggerSinkFile::LoggerSinkFile(Logger& logger, const string& path, int lvl) :
-  LoggerSink(logger, path, lvl)
-{
+LoggerSinkFile::LoggerSinkFile(Logger& logger, const string& path, int lvl)
+    : LoggerSink(logger, path, lvl) {
   if (path == "cout"s) {
     fpCout = &cout;
   } else if (path == "cerr"s) {
@@ -42,8 +41,8 @@ LoggerSinkFile::LoggerSinkFile(Logger& logger, const string& path, int lvl) :
   } else {
     fpOStream = make_unique<ofstream>(path);
     if (!fpOStream->is_open())
-      throw Exception(fmt::format("LoggerSinkFile::ctor: open() failed for '{}'",
-                                  path));
+      throw Exception(
+          fmt::format("LoggerSinkFile::ctor: open() failed for '{}'", path));
   }
 }
 
@@ -56,16 +55,19 @@ void LoggerSinkFile::ProcessMessageVec(const vector<LoggerMessage>& msgvec) {
   size_t msgcnt = 0;
 
   for (auto& msg : msgvec) {
-    if (msg.fSevId < fLogLevel) continue;
+    if (msg.fSevId < fLogLevel)
+      continue;
     msgcnt += 1;
-    string keys = fmt::format("host={},thread={},sev={}",
-                              fLogger.HostName(), msg.fThreadName,
-                              fLogger.SeverityCode2Text(msg.fSevId));
-    if (msg.fKeys.length()) keys += "," + msg.fKeys;
-    os << TimePoint2String(msg.fTime)
-       << ": {" << keys << "}: " << msg.fMessage << "\n";
+    string keys =
+        fmt::format("host={},thread={},sev={}", fLogger.HostName(),
+                    msg.fThreadName, fLogger.SeverityCode2Text(msg.fSevId));
+    if (msg.fKeys.length())
+      keys += "," + msg.fKeys;
+    os << TimePoint2String(msg.fTime) << ": {" << keys << "}: " << msg.fMessage
+       << "\n";
   }
-  if (msgcnt > 0) os.flush();
+  if (msgcnt > 0)
+    os.flush();
 }
 
 } // end namespace cbm

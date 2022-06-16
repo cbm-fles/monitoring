@@ -11,9 +11,7 @@ namespace cbm {
 //-----------------------------------------------------------------------------
 //! \brief Destructor, will close the file descriptor it has been set
 
-inline FileDescriptor::~FileDescriptor() {
-  Close();
-}
+inline FileDescriptor::~FileDescriptor() { Close(); }
 
 //-----------------------------------------------------------------------------
 //! \brief Set file descriptor
@@ -29,15 +27,14 @@ inline void FileDescriptor::Set(int fd) {
 //! \brief Close and unset file descriptor
 
 inline void FileDescriptor::Close() {
-  if (fFd > 2) (void)::close(fFd);
+  if (fFd > 2)
+    (void)::close(fFd);
   fFd = -1;
 }
 
 //-----------------------------------------------------------------------------
 //! \brief int() conversion, allows to directly use an object like an integer
 
-inline FileDescriptor::operator int() const {
-  return fFd;
-}
+inline FileDescriptor::operator int() const { return fFd; }
 
 } // end namespace cbm

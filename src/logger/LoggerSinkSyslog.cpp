@@ -35,24 +35,22 @@ using namespace std;
   \param lvl    \glos{loglevel} for writing
  */
 
-LoggerSinkSyslog::LoggerSinkSyslog(Logger& logger, const string& path,
-                                   int lvl) :
-  LoggerSink(logger, path, lvl)
-{
+LoggerSinkSyslog::LoggerSinkSyslog(Logger& logger, const string& path, int lvl)
+    : LoggerSink(logger, path, lvl) {
   // enforce path == "", ensures that this sink type can only be created once
   if (path != "")
-    throw Exception(fmt::format("LoggerSinkSyslog::ctor: path non-enpty '{}'",
-                                path));
+    throw Exception(
+        fmt::format("LoggerSinkSyslog::ctor: path non-enpty '{}'", path));
 
   // setup Logger -> Syslog severity mapping
-  fSevMap.resize(Logger::kLogFatal+1);
-  fSevMap[Logger::kLogTrace]   = LOG_DEBUG;
-  fSevMap[Logger::kLogDebug]   = LOG_DEBUG;
-  fSevMap[Logger::kLogInfo]    = LOG_INFO;
-  fSevMap[Logger::kLogNote]    = LOG_NOTICE;
+  fSevMap.resize(Logger::kLogFatal + 1);
+  fSevMap[Logger::kLogTrace] = LOG_DEBUG;
+  fSevMap[Logger::kLogDebug] = LOG_DEBUG;
+  fSevMap[Logger::kLogInfo] = LOG_INFO;
+  fSevMap[Logger::kLogNote] = LOG_NOTICE;
   fSevMap[Logger::kLogWarning] = LOG_WARNING;
-  fSevMap[Logger::kLogError]   = LOG_ERR;
-  fSevMap[Logger::kLogFatal]   = LOG_ERR;       // EMERG is too noisy !
+  fSevMap[Logger::kLogError] = LOG_ERR;
+  fSevMap[Logger::kLogFatal] = LOG_ERR; // EMERG is too noisy !
 
   // open syslog connection: use facility 'local1'
   ::openlog("cbm", LOG_PID, LOG_LOCAL1);
@@ -64,11 +62,13 @@ LoggerSinkSyslog::LoggerSinkSyslog(Logger& logger, const string& path,
 
 void LoggerSinkSyslog::ProcessMessageVec(const vector<LoggerMessage>& msgvec) {
   for (auto& msg : msgvec) {
-    if (msg.fSevId < fLogLevel) continue;
-    string keys = fmt::format("time={},thread={},sev={}",
-                              TimePoint2String(msg.fTime), msg.fThreadName,
-                              fLogger.SeverityCode2Text(msg.fSevId));
-    if (msg.fKeys.length()) keys += "," + msg.fKeys;
+    if (msg.fSevId < fLogLevel)
+      continue;
+    string keys =
+        fmt::format("time={},thread={},sev={}", TimePoint2String(msg.fTime),
+                    msg.fThreadName, fLogger.SeverityCode2Text(msg.fSevId));
+    if (msg.fKeys.length())
+      keys += "," + msg.fKeys;
 
     int syslvl = LOG_ERR;
     if (msg.fSevId >= 0 && msg.fSevId <= Logger::kLogFatal)

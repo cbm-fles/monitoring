@@ -7,32 +7,23 @@ namespace cbm {
 //-----------------------------------------------------------------------------
 //! \brief Returns hostname used by Logger
 
-inline const string& Logger::HostName() const {
-  return fHostName;
-}
+inline const string& Logger::HostName() const { return fHostName; }
 
 //-----------------------------------------------------------------------------
 //! \brief Returns program name used by Logger
 
-inline const string& Logger::ProgName() const {
-  return fProgName;
-}
+inline const string& Logger::ProgName() const { return fProgName; }
 
 //-----------------------------------------------------------------------------
 //! \brief Static method which returns a reference of the
 //!  Logger \glos{singleton}
 
-inline Logger& Logger::Ref() {
-  return *fpSingleton;
-}
+inline Logger& Logger::Ref() { return *fpSingleton; }
 
 //-----------------------------------------------------------------------------
 //! \brief Static method which returns a pointer to the
 //!  Logger \glos{singleton}
 
-inline Logger* Logger::Ptr() {
-  return fpSingleton;
-}
+inline Logger* Logger::Ptr() { return fpSingleton; }
 
 } // end namespace cbm
-

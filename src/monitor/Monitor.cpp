@@ -83,7 +83,7 @@ using namespace std::chrono_literals;
 
 //-----------------------------------------------------------------------------
 // some constants
-static constexpr scduration kHeartbeat = 60s;   // heartbeat interval
+static constexpr scduration kHeartbeat = 60s; // heartbeat interval
 
 //-----------------------------------------------------------------------------
 /*! \brief Constructor
@@ -115,7 +115,7 @@ Monitor::Monitor() {
   fNextHeartbeat = ScNow();
 
   // start EventLoop
-  fThread = thread([this](){ EventLoop(); });
+  fThread = thread([this]() { EventLoop(); });
 
   fpSingleton = this;
 }
@@ -148,33 +148,36 @@ void Monitor::OpenSink(const string& sname) {
     lock_guard<mutex> lock(fSinkMapMutex);
     auto it = fSinkMap.find(sname);
     if (it != fSinkMap.end())
-      throw Exception(fmt::format("Monitor::OpenSink: sink '{}' already open",
-                                  sname));
+      throw Exception(
+          fmt::format("Monitor::OpenSink: sink '{}' already open", sname));
   }
 
   auto pos = sname.find(':');
   if (pos == string::npos)
     throw Exception(fmt::format("Monitor::OpenSink:"
-                                " no sink type specified in '{}'", sname));
+                                " no sink type specified in '{}'",
+                                sname));
 
-  string stype = sname.substr(0,pos);
-  string spath = sname.substr(pos+1);
+  string stype = sname.substr(0, pos);
+  string spath = sname.substr(pos + 1);
 
   if (stype == "file") {
     unique_ptr<MonitorSink> uptr = make_unique<MonitorSinkFile>(*this, spath);
     lock_guard<mutex> lock(fSinkMapMutex);
     fSinkMap.try_emplace(sname, move(uptr));
   } else if (stype == "influx1") {
-    unique_ptr<MonitorSink> uptr = make_unique<MonitorSinkInflux1>(*this, spath);
+    unique_ptr<MonitorSink> uptr =
+        make_unique<MonitorSinkInflux1>(*this, spath);
     lock_guard<mutex> lock(fSinkMapMutex);
     fSinkMap.try_emplace(sname, move(uptr));
   } else if (stype == "influx2") {
-    unique_ptr<MonitorSink> uptr = make_unique<MonitorSinkInflux2>(*this, spath);
+    unique_ptr<MonitorSink> uptr =
+        make_unique<MonitorSinkInflux2>(*this, spath);
     lock_guard<mutex> lock(fSinkMapMutex);
     fSinkMap.try_emplace(sname, move(uptr));
   } else {
-    throw Exception(fmt::format("Monitor::OpenSink: invalid sink type '{}'",
-                                stype));
+    throw Exception(
+        fmt::format("Monitor::OpenSink: invalid sink type '{}'", stype));
   }
 }
 
@@ -187,8 +190,8 @@ void Monitor::OpenSink(const string& sname) {
 void Monitor::CloseSink(const string& sname) {
   lock_guard<mutex> lock(fSinkMapMutex);
   if (fSinkMap.erase(sname) == 0)
-    throw Exception(fmt::format("Monitor::CloseSink: sink '{}' not found",
-                                sname));
+    throw Exception(
+        fmt::format("Monitor::CloseSink: sink '{}' not found", sname));
 }
 
 //-----------------------------------------------------------------------------
@@ -197,7 +200,8 @@ void Monitor::CloseSink(const string& sname) {
 vector<string> Monitor::SinkList() {
   vector<string> res;
   lock_guard<mutex> lock(fSinkMapMutex);
-  for (auto& kv : fSinkMap) res.push_back(kv.first);
+  for (auto& kv : fSinkMap)
+    res.push_back(kv.first);
   return res;
 }
 
@@ -217,13 +221,15 @@ void Monitor::QueueMetric(const Metric& point) {
  */
 
 void Monitor::QueueMetric(Metric&& point) {
-  if (fStopped) return;                     // discard when already stopped
+  if (fStopped)
+    return; // discard when already stopped
   auto ts = point.fTimestamp;
-  if (ts == sctime_point()) ts = ScNow();
+  if (ts == sctime_point())
+    ts = ScNow();
   {
     lock_guard<mutex> lock(fMetVecMutex);
     fMetVec.emplace_back(move(point));
-    fMetVec[fMetVec.size()-1].fTimestamp = ts;
+    fMetVec[fMetVec.size() - 1].fTimestamp = ts;
   }
 }
 
@@ -235,7 +241,8 @@ void Monitor::QueueMetric(Metric&& point) {
   \param timestamp    timestamp (defaults to now() when omitted)
  */
 
-void Monitor::QueueMetric(const string& measurement, const MetricTagSet& tagset,
+void Monitor::QueueMetric(const string& measurement,
+                          const MetricTagSet& tagset,
                           const MetricFieldSet& fieldset,
                           sctime_point timestamp) {
   Metric point(measurement, tagset, fieldset, timestamp);
@@ -250,8 +257,10 @@ void Monitor::QueueMetric(const string& measurement, const MetricTagSet& tagset,
   \param timestamp    timestamp (defaults to now() when omitted)
  */
 
-void Monitor::QueueMetric(const string& measurement, const MetricTagSet& tagset,
-                          MetricFieldSet&& fieldset, sctime_point timestamp) {
+void Monitor::QueueMetric(const string& measurement,
+                          const MetricTagSet& tagset,
+                          MetricFieldSet&& fieldset,
+                          sctime_point timestamp) {
   Metric point(measurement, tagset, move(fieldset), timestamp);
   QueueMetric(move(point));
 }
@@ -264,8 +273,10 @@ void Monitor::QueueMetric(const string& measurement, const MetricTagSet& tagset,
   \param timestamp    timestamp (defaults to now() when omitted)
  */
 
-void Monitor::QueueMetric(const string& measurement, MetricTagSet&& tagset,
-                          MetricFieldSet&& fieldset, sctime_point timestamp) {
+void Monitor::QueueMetric(const string& measurement,
+                          MetricTagSet&& tagset,
+                          MetricFieldSet&& fieldset,
+                          sctime_point timestamp) {
   Metric point(measurement, move(tagset), move(fieldset), timestamp);
   QueueMetric(move(point));
 }
@@ -282,7 +293,8 @@ void Monitor::QueueMetric(const string& measurement, MetricTagSet&& tagset,
 void Monitor::Stop() {
   fStopped = true;
   Wakeup();
-  if (fThread.joinable()) fThread.join();
+  if (fThread.joinable())
+    fThread.join();
 }
 
 //-----------------------------------------------------------------------------
@@ -312,13 +324,14 @@ void Monitor::EventLoop() {
   polllist[0] = pollfd{fEvtFd, POLLIN, 0};
 
   while (true) {
-    ::poll(polllist, 1, kELoopTimeout);     // timeout results in auto flush
+    ::poll(polllist, 1, kELoopTimeout); // timeout results in auto flush
 
     // handle fEvtFd -------------------------------------------------
     if (polllist[0].revents == POLLIN) {
-      uint64_t cnt=0;
+      uint64_t cnt = 0;
       if (::read(fEvtFd, &cnt, sizeof(cnt)) != sizeof(cnt))
-        throw SysCallException("Monitor::EventLoop"s, "read"s, "fEvtFd"s, errno);
+        throw SysCallException("Monitor::EventLoop"s, "read"s, "fEvtFd"s,
+                               errno);
     }
 
     metvec_t metvec;
@@ -329,25 +342,31 @@ void Monitor::EventLoop() {
         metvec.swap(fMetVec);
         // determine sensible capacity to minimize re-allocs
         size_t ncap = metvec.capacity();
-        if (metvec.size() > metvec.capacity()/2) ncap += ncap/2;
-        else ncap = ncap/2;
-        if (ncap < 4) ncap = 4;
+        if (metvec.size() > metvec.capacity() / 2)
+          ncap += ncap / 2;
+        else
+          ncap = ncap / 2;
+        if (ncap < 4)
+          ncap = 4;
         fMetVec.reserve(ncap);
       }
     }
 
     if (metvec.size() > 0) {
       lock_guard<mutex> lock(fSinkMapMutex);
-      for (auto& kv : fSinkMap) (*kv.second).ProcessMetricVec(metvec);
+      for (auto& kv : fSinkMap)
+        (*kv.second).ProcessMetricVec(metvec);
     }
 
-    if (ScNow() > fNextHeartbeat && !fStopped) {  // handle heartbeats
-      fNextHeartbeat += kHeartbeat;               // schedule nexr
+    if (ScNow() > fNextHeartbeat && !fStopped) { // handle heartbeats
+      fNextHeartbeat += kHeartbeat;              // schedule nexr
       lock_guard<mutex> lock(fSinkMapMutex);
-      for (auto& kv : fSinkMap) (*kv.second).ProcessHeartbeat();
+      for (auto& kv : fSinkMap)
+        (*kv.second).ProcessHeartbeat();
     }
 
-    if (fStopped) break;
+    if (fStopped)
+      break;
   } // while (true)
 }
 
@@ -361,7 +380,8 @@ void Monitor::EventLoop() {
 MonitorSink& Monitor::SinkRef(const string& sname) {
   auto it = fSinkMap.find(sname);
   if (it == fSinkMap.end())
-    throw Exception(fmt::format("Monitor::SinkRef: sink '{}' not found", sname));
+    throw Exception(
+        fmt::format("Monitor::SinkRef: sink '{}' not found", sname));
   return *(it->second.get());
 }
 

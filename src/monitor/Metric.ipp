@@ -16,13 +16,12 @@ namespace cbm {
   \param timestamp    timestamp (defaults to time of `QueueMetric` when omitted)
  */
 
-inline Metric::Metric(const string& measurement, const MetricTagSet& tagset,
-                      const MetricFieldSet& fieldset, sctime_point timestamp) :
-  fMeasurement(measurement),
-  fTagset(tagset),
-  fFieldset(fieldset),
-  fTimestamp(timestamp)
-{}
+inline Metric::Metric(const string& measurement,
+                      const MetricTagSet& tagset,
+                      const MetricFieldSet& fieldset,
+                      sctime_point timestamp)
+    : fMeasurement(measurement), fTagset(tagset), fFieldset(fieldset),
+      fTimestamp(timestamp) {}
 
 //-----------------------------------------------------------------------------
 /*! \brief Constructor from components, move fieldset
@@ -32,13 +31,12 @@ inline Metric::Metric(const string& measurement, const MetricTagSet& tagset,
   \param timestamp    timestamp (defaults to time of `QueueMetric` when omitted)
  */
 
-inline Metric::Metric(const string& measurement, const MetricTagSet& tagset,
-                      MetricFieldSet&& fieldset, sctime_point timestamp) :
-  fMeasurement(measurement),
-  fTagset(tagset),
-  fFieldset(move(fieldset)),
-  fTimestamp(timestamp)
-{}
+inline Metric::Metric(const string& measurement,
+                      const MetricTagSet& tagset,
+                      MetricFieldSet&& fieldset,
+                      sctime_point timestamp)
+    : fMeasurement(measurement), fTagset(tagset), fFieldset(move(fieldset)),
+      fTimestamp(timestamp) {}
 
 //-----------------------------------------------------------------------------
 /*! \brief Constructor from components, move tagset and fieldset
@@ -48,12 +46,11 @@ inline Metric::Metric(const string& measurement, const MetricTagSet& tagset,
   \param timestamp    timestamp (defaults to time of `QueueMetric` when omitted)
  */
 
-inline Metric::Metric(const string& measurement, MetricTagSet&& tagset,
-                      MetricFieldSet&& fieldset, sctime_point timestamp) :
-  fMeasurement(measurement),
-  fTagset(move(tagset)),
-  fFieldset(move(fieldset)),
-  fTimestamp(timestamp)
-{}
+inline Metric::Metric(const string& measurement,
+                      MetricTagSet&& tagset,
+                      MetricFieldSet&& fieldset,
+                      sctime_point timestamp)
+    : fMeasurement(measurement), fTagset(move(tagset)),
+      fFieldset(move(fieldset)), fTimestamp(timestamp) {}
 
 } // end namespace cbm

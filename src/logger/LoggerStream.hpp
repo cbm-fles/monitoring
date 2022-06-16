@@ -11,24 +11,27 @@
 
 namespace cbm {
 
-class Logger;                               // forward declaration
+class Logger; // forward declaration
 
 class LoggerStream {
-  public:
-                    LoggerStream() = delete;
-                    LoggerStream(Logger& logger, int sev, const string& keys1,
-                                 const string& mid, const string& keys2);
-                    ~LoggerStream();
+public:
+  LoggerStream() = delete;
+  LoggerStream(Logger& logger,
+               int sev,
+               const string& keys1,
+               const string& mid,
+               const string& keys2);
+  ~LoggerStream();
 
-  ostream&          Stream();
+  ostream& Stream();
 
-  private:
-  Logger&           fLogger;                //!< back reference to Logger
-  sctime_point      fTime;                  //!< timestamo
-  int               fSevId;                 //!< severity
-  string            fThreadName;            //!< thread name
-  string            fKeys;                  //!< key string
-  ostringstream     fSStream;               //!< message
+private:
+  Logger& fLogger;        //!< back reference to Logger
+  sctime_point fTime;     //!< timestamo
+  int fSevId;             //!< severity
+  string fThreadName;     //!< thread name
+  string fKeys;           //!< key string
+  ostringstream fSStream; //!< message
 };
 
 } // end namespace cbm

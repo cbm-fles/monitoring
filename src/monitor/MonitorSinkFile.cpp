@@ -30,9 +30,8 @@ using namespace std;
   simultaneously and will receive the same data.
  */
 
-MonitorSinkFile::MonitorSinkFile(Monitor& monitor, const string& path) :
-  MonitorSink(monitor, path)
-{
+MonitorSinkFile::MonitorSinkFile(Monitor& monitor, const string& path)
+    : MonitorSink(monitor, path) {
   if (path == "cout"s) {
     fpCout = &cout;
   } else if (path == "cerr"s) {
@@ -41,7 +40,8 @@ MonitorSinkFile::MonitorSinkFile(Monitor& monitor, const string& path) :
     fpOStream = make_unique<ofstream>(path);
     if (!fpOStream->is_open())
       throw Exception(fmt::format("MonitorSinkFile::ctor: open()"
-                                  " failed for '{}'", path));
+                                  " failed for '{}'",
+                                  path));
   }
 }
 
@@ -51,16 +51,16 @@ MonitorSinkFile::MonitorSinkFile(Monitor& monitor, const string& path) :
 
 void MonitorSinkFile::ProcessMetricVec(const vector<Metric>& metvec) {
   ostream& os = fpCout ? *fpCout : *fpOStream;
-  for (auto& met : metvec) os << InfluxLine(met) << "\n";
-  if (size(metvec) > 0) os.flush();
+  for (auto& met : metvec)
+    os << InfluxLine(met) << "\n";
+  if (size(metvec) > 0)
+    os.flush();
 }
 
 //-----------------------------------------------------------------------------
 /*! \brief Process heartbeat (noop for file sink)
  */
 
-void MonitorSinkFile::ProcessHeartbeat() {
-}
-
+void MonitorSinkFile::ProcessHeartbeat() {}
 
 } // end namespace cbm

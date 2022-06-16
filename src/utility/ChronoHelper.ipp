@@ -11,9 +11,7 @@ using namespace std;
   \brief Returns the current time as sctime_point
 */
 
-inline sctime_point ScNow() {
-  return chrono::system_clock::now();
-}
+inline sctime_point ScNow() { return chrono::system_clock::now(); }
 
 //-----------------------------------------------------------------------------
 /*!
@@ -24,9 +22,7 @@ inline sctime_point ScNow() {
   Useful as timestamp prefix in messages.
 */
 
-inline string TimeStamp() {
-  return TimePoint2String(ScNow());
-}
+inline string TimeStamp() { return TimePoint2String(ScNow()); }
 
 //-----------------------------------------------------------------------------
 /*!
@@ -38,7 +34,7 @@ inline string TimeStamp() {
 
 inline long ScDuration2Msec(const scduration& dur) {
   auto dur_msec = chrono::duration_cast<chrono::milliseconds>(dur);
-  return long(dur_msec.count()) ;
+  return long(dur_msec.count());
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +47,7 @@ inline long ScDuration2Msec(const scduration& dur) {
 
 inline long ScDuration2Usec(const scduration& dur) {
   auto dur_usec = chrono::duration_cast<chrono::microseconds>(dur);
-  return long(dur_usec.count()) ;
+  return long(dur_usec.count());
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +60,7 @@ inline long ScDuration2Usec(const scduration& dur) {
 
 inline long ScDuration2Nsec(const scduration& dur) {
   auto dur_nsec = chrono::duration_cast<chrono::nanoseconds>(dur);
-  return long(dur_nsec.count()) ;
+  return long(dur_nsec.count());
 }
 
 //-----------------------------------------------------------------------------
@@ -126,9 +122,7 @@ inline long ScTimePoint2Nsec(const sctime_point& time) {
   \returns time in nsec after the epoch
 */
 
-inline long ScTimePoint2Nsec() {
-  return ScTimePoint2Nsec(ScNow());
-}
+inline long ScTimePoint2Nsec() { return ScTimePoint2Nsec(ScNow()); }
 
 //-----------------------------------------------------------------------------
 /*!

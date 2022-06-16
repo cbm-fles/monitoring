@@ -11,16 +11,15 @@
 
 namespace cbm {
 using namespace std;
-  
+
 class LoggerSinkSyslog : public LoggerSink {
-  public:
-                    LoggerSinkSyslog(Logger& logger, const string& path,
-                                     int lvl);
+public:
+  LoggerSinkSyslog(Logger& logger, const string& path, int lvl);
 
-  virtual void      ProcessMessageVec(const vector<LoggerMessage>& msgvec);
+  virtual void ProcessMessageVec(const vector<LoggerMessage>& msgvec);
 
-  private:
-  vector<int>       fSevMap {};             //!< severity mapping
+private:
+  vector<int> fSevMap{}; //!< severity mapping
 };
 
 } // end namespace cbm

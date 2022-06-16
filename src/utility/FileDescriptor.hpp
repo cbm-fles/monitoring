@@ -13,18 +13,18 @@
 namespace cbm {
 
 class FileDescriptor {
-  public:
-                    FileDescriptor() = default;
-                    ~FileDescriptor();
+public:
+  FileDescriptor() = default;
+  ~FileDescriptor();
 
-  void              Set(int fd);
-  void              Close();
-                    operator int() const;
+  void Set(int fd);
+  void Close();
+  operator int() const;
 
-  private:
-  int               fFd {-1};               //!< file descriptor number
+private:
+  int fFd{-1}; //!< file descriptor number
 };
-  
+
 } // end namespace cbm
 
 #include "FileDescriptor.ipp"

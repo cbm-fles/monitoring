@@ -13,16 +13,16 @@
 
 namespace cbm {
 using namespace std;
-  
+
 class LoggerSinkFile : public LoggerSink {
-  public:
-                    LoggerSinkFile(Logger& logger, const string& path, int lvl);
+public:
+  LoggerSinkFile(Logger& logger, const string& path, int lvl);
 
-  virtual void      ProcessMessageVec(const vector<LoggerMessage>& msgvec);
+  virtual void ProcessMessageVec(const vector<LoggerMessage>& msgvec);
 
-  private:
-  ostream*          fpCout {nullptr};       //!< pointer to cout/cerr
-  unique_ptr<ofstream>  fpOStream {};       //!< uptr to general output stream
+private:
+  ostream* fpCout{nullptr};         //!< pointer to cout/cerr
+  unique_ptr<ofstream> fpOStream{}; //!< uptr to general output stream
 };
 
 } // end namespace cbm

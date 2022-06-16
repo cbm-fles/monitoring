@@ -33,19 +33,19 @@ namespace cbm {
   - key set composed from `keys1`, `mid`, and `keys2`
  */
 
-LoggerStream::LoggerStream(Logger& logger, int sev, const string& keys1,
-                           const string& mid, const string& keys2) :
-  fLogger(logger),
-  fTime(ScNow()),
-  fSevId(sev),
-  fThreadName(PThreadName()),
-  fKeys(keys1),
-  fSStream()
-{
-  if (mid.length())   fKeys += ",mid=" + mid;
+LoggerStream::LoggerStream(Logger& logger,
+                           int sev,
+                           const string& keys1,
+                           const string& mid,
+                           const string& keys2)
+    : fLogger(logger), fTime(ScNow()), fSevId(sev), fThreadName(PThreadName()),
+      fKeys(keys1), fSStream() {
+  if (mid.length())
+    fKeys += ",mid=" + mid;
   if (keys2.length()) {
-    string_view keys2sv(keys2);             // view with dropped trailing ','
-    if (keys2sv[keys2sv.length()-1] == ',') keys2sv.remove_suffix(1);
+    string_view keys2sv(keys2); // view with dropped trailing ','
+    if (keys2sv[keys2sv.length() - 1] == ',')
+      keys2sv.remove_suffix(1);
     fKeys += ",";
     fKeys += keys2sv;
   }
@@ -57,11 +57,10 @@ LoggerStream::LoggerStream(Logger& logger, int sev, const string& keys1,
   Queues the message for processing by the Logger core.
  */
 
-LoggerStream::~LoggerStream()
-{
+LoggerStream::~LoggerStream() {
   string text = fSStream.str();
-  fLogger.QueueMessage(LoggerMessage{fTime, fSevId, move(fThreadName),
-        move(fKeys), move(text)});
+  fLogger.QueueMessage(
+      LoggerMessage{fTime, fSevId, move(fThreadName), move(fKeys), move(text)});
 }
-  
+
 } // end namespace cbm

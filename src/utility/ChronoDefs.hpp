@@ -11,7 +11,7 @@ namespace cbm {
 using namespace std;
 
 using sctime_point = chrono::system_clock::time_point;
-using scduration   = chrono::system_clock::duration;
+using scduration = chrono::system_clock::duration;
 
 } // end namespace cbm
 

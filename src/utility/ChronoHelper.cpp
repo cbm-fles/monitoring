@@ -31,14 +31,14 @@ using namespace std;
 string TimePoint2String(const sctime_point& tpoint) {
   // get the date/time part up to the seconds level
   time_t tp_tt = chrono::system_clock::to_time_t(tpoint);
-  tm     tp_tm={};
-  (void) ::localtime_r(&tp_tt, &tp_tm);
+  tm tp_tm = {};
+  (void)::localtime_r(&tp_tt, &tp_tm);
   // get fractional seconds part at microseconds precision
-  auto tp_dur  = tpoint.time_since_epoch();
-  auto tp_sec  = chrono::duration_cast<chrono::seconds>(tp_dur);
-  auto tp_usec = chrono::duration_cast<chrono::microseconds>(tp_dur-tp_sec);
+  auto tp_dur = tpoint.time_since_epoch();
+  auto tp_sec = chrono::duration_cast<chrono::seconds>(tp_dur);
+  auto tp_usec = chrono::duration_cast<chrono::microseconds>(tp_dur - tp_sec);
   return fmt::format("{:4d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}.{:06d}",
-                     tp_tm.tm_year+1900, tp_tm.tm_mon+1, tp_tm.tm_mday,
+                     tp_tm.tm_year + 1900, tp_tm.tm_mon + 1, tp_tm.tm_mday,
                      tp_tm.tm_hour, tp_tm.tm_min, tp_tm.tm_sec,
                      int(tp_usec.count()));
 }

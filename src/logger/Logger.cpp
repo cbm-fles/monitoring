@@ -95,7 +95,8 @@ namespace cbm {
   - `CBMLOGGEN1(sev,mid,keys)`: with severity as argument without
                                 \glos{loglevel} check
 
-  A set of interface macros for usage outside of \glos{DClass}es is also provided
+  A set of interface macros for usage outside of \glos{DClass}es is also
+  provided
   - `CBMLOGNOT1(keys1,mid)`: for `Note`
   - `CBMLOGERR1(keys1,mid)`: for `Error`
   - `CBMLOGFAT1(keys1,mid)`: for `Fatal`
@@ -149,9 +150,9 @@ namespace cbm {
   the name "Cbm:logger" for processing the messages.
  */
 
-Logger::Logger() :
-  fSevCode2Text{"Trace", "Debug", "Info", "Note", "Warning", "Error", "Fatal"}
-{
+Logger::Logger()
+    : fSevCode2Text{"Trace",   "Debug", "Info", "Note",
+                    "Warning", "Error", "Fatal"} {
   // singleton check
   if (fpSingleton)
     throw Exception("Logger::ctor: already instantiated");
@@ -172,7 +173,7 @@ Logger::Logger() :
   fProgName = PThreadName();
 
   // start EventLoop
-  fThread = thread([this](){ EventLoop(); });
+  fThread = thread([this]() { EventLoop(); });
 
   fpSingleton = this;
 }
@@ -198,8 +199,10 @@ Logger::~Logger() {
   \returns LoggerMessage object
  */
 
-LoggerStream Logger::MakeStream(int sev, const string& keys1,
-                                const string& mid, const string& keys2) {
+LoggerStream Logger::MakeStream(int sev,
+                                const string& keys1,
+                                const string& mid,
+                                const string& keys2) {
   return LoggerStream(*this, sev, keys1, mid, keys2);
 }
 
@@ -215,9 +218,11 @@ string Logger::SeverityCode2Text(int sevcode, bool nothrow) {
   if (sevcode >= 0 && sevcode <= kLogFatal) {
     return fSevCode2Text[size_t(sevcode)];
   }
-  if (nothrow) return ""s;
+  if (nothrow)
+    return ""s;
   throw Exception(fmt::format("Logger::SeverityCode2Text:"
-                              " invalid severity code {}", sevcode));
+                              " invalid severity code {}",
+                              sevcode));
 }
 
 //-----------------------------------------------------------------------------
@@ -229,11 +234,14 @@ string Logger::SeverityCode2Text(int sevcode, bool nothrow) {
  */
 
 int Logger::SeverityText2Code(const string& sevtext, bool nothrow) {
-  for (size_t i=0; i<fSevCode2Text.size(); i++)
-    if (fSevCode2Text[i] == sevtext) return int(i);
-  if (nothrow) return -1;
+  for (size_t i = 0; i < fSevCode2Text.size(); i++)
+    if (fSevCode2Text[i] == sevtext)
+      return int(i);
+  if (nothrow)
+    return -1;
   throw Exception(fmt::format("Logger::SeverityText2Code:"
-                              " invalid severity text '{}'", sevtext));
+                              " invalid severity text '{}'",
+                              sevtext));
 }
 
 //-----------------------------------------------------------------------------
@@ -253,35 +261,37 @@ void Logger::OpenSink(const string& sname, int lvl) {
     lock_guard<mutex> lock(fSinkMapMutex);
     auto it = fSinkMap.find(sname);
     if (it != fSinkMap.end())
-      throw Exception(fmt::format("Logger::OpenSink: sink '{}' already open",
-                                  sname));
+      throw Exception(
+          fmt::format("Logger::OpenSink: sink '{}' already open", sname));
   }
 
   auto pos = sname.find(':');
   if (pos == string::npos)
     throw Exception(fmt::format("Logger::OpenSink:"
-                                " no sink type specified in '{}'", sname));
+                                " no sink type specified in '{}'",
+                                sname));
 
-  string stype = sname.substr(0,pos);
-  string spath = sname.substr(pos+1);
+  string stype = sname.substr(0, pos);
+  string spath = sname.substr(pos + 1);
 
   if (stype == "file") {
-    unique_ptr<LoggerSink> uptr = make_unique<LoggerSinkFile>(*this, spath, lvl);
+    unique_ptr<LoggerSink> uptr =
+        make_unique<LoggerSinkFile>(*this, spath, lvl);
     lock_guard<mutex> lock(fSinkMapMutex);
     fSinkMap.try_emplace(sname, move(uptr));
   } else if (stype == "syslog") {
-    unique_ptr<LoggerSink> uptr = make_unique<LoggerSinkSyslog>(*this, spath,
-                                                                lvl);
+    unique_ptr<LoggerSink> uptr =
+        make_unique<LoggerSinkSyslog>(*this, spath, lvl);
     lock_guard<mutex> lock(fSinkMapMutex);
     fSinkMap.try_emplace(sname, move(uptr));
   } else if (stype == "monitor") {
-    unique_ptr<LoggerSink> uptr = make_unique<LoggerSinkMonitor>(*this, spath,
-                                                                 lvl);
+    unique_ptr<LoggerSink> uptr =
+        make_unique<LoggerSinkMonitor>(*this, spath, lvl);
     lock_guard<mutex> lock(fSinkMapMutex);
     fSinkMap.try_emplace(sname, move(uptr));
   } else {
-    throw Exception(fmt::format("Logger::OpenSink: invalid sink type '{}'",
-                                stype));
+    throw Exception(
+        fmt::format("Logger::OpenSink: invalid sink type '{}'", stype));
   }
 }
 
@@ -294,8 +304,8 @@ void Logger::OpenSink(const string& sname, int lvl) {
 void Logger::CloseSink(const string& sname) {
   lock_guard<mutex> lock(fSinkMapMutex);
   if (fSinkMap.erase(sname) == 0)
-    throw Exception(fmt::format("Logger::CloseSink: sink '{}' not found",
-                                sname));
+    throw Exception(
+        fmt::format("Logger::CloseSink: sink '{}' not found", sname));
 }
 
 //-----------------------------------------------------------------------------
@@ -304,7 +314,8 @@ void Logger::CloseSink(const string& sname) {
 vector<string> Logger::SinkList() {
   vector<string> res;
   lock_guard<mutex> lock(fSinkMapMutex);
-  for (auto& kv : fSinkMap) res.push_back(kv.first);
+  for (auto& kv : fSinkMap)
+    res.push_back(kv.first);
   return res;
 }
 
@@ -342,7 +353,8 @@ void Logger::QueueMessage(LoggerMessage&& msg) {
     lock_guard<mutex> lock(fMsgVecMutex);
     fMsgVec.push_back(move(msg));
   }
-  if (wakeup) Wakeup();
+  if (wakeup)
+    Wakeup();
 }
 
 //-----------------------------------------------------------------------------
@@ -357,7 +369,8 @@ void Logger::QueueMessage(LoggerMessage&& msg) {
 void Logger::Stop() {
   fStopped = true;
   Wakeup();
-  if (fThread.joinable()) fThread.join();
+  if (fThread.joinable())
+    fThread.join();
 }
 
 //-----------------------------------------------------------------------------
@@ -386,11 +399,11 @@ void Logger::EventLoop() {
   polllist[0] = pollfd{fEvtFd, POLLIN, 0};
 
   while (true) {
-    ::poll(polllist, 1, kELoopTimeout);     // timeout results in auto flush
+    ::poll(polllist, 1, kELoopTimeout); // timeout results in auto flush
 
     // handle fEvtFd -------------------------------------------------
     if (polllist[0].revents == POLLIN) {
-      uint64_t cnt=0;
+      uint64_t cnt = 0;
       if (::read(fEvtFd, &cnt, sizeof(cnt)) != sizeof(cnt))
         throw SysCallException("Logger::EventLoop"s, "read"s, "fEvtFd"s, errno);
     }
@@ -403,19 +416,24 @@ void Logger::EventLoop() {
         msgvec.swap(fMsgVec);
         // determine sensible capacity to minimize re-allocs
         size_t ncap = msgvec.capacity();
-        if (msgvec.size() > msgvec.capacity()/2) ncap += ncap/2;
-        else ncap = ncap/2;
-        if (ncap < 4) ncap = 4;
+        if (msgvec.size() > msgvec.capacity() / 2)
+          ncap += ncap / 2;
+        else
+          ncap = ncap / 2;
+        if (ncap < 4)
+          ncap = 4;
         fMsgVec.reserve(ncap);
       }
     }
 
     if (msgvec.size() > 0) {
       lock_guard<mutex> lock(fSinkMapMutex);
-      for (auto& kv : fSinkMap) (*kv.second).ProcessMessageVec(msgvec);
+      for (auto& kv : fSinkMap)
+        (*kv.second).ProcessMessageVec(msgvec);
     }
 
-    if (fStopped) break;
+    if (fStopped)
+      break;
   } // while (true)
 }
 
@@ -474,8 +492,8 @@ Logger* Logger::fpSingleton = nullptr;
   trailing "\n" or `endl`.
   Typical usage is
   \code{.cpp}
-  CBMLOGGEN(Logger::kLogWarning,"<mid>","") << "text: a1=" << a1 << ",a2=" << a2;
-  \endcode
+  CBMLOGGEN(Logger::kLogWarning,"<mid>","") << "text: a1=" << a1 << ",a2=" <<
+  a2; \endcode
 
   This macro is used by CBMLOGERR(mid,keys), CBMLOGWAR(mid,keys),
   CBMLOGNOT(mid,keys), CBMLOGINF(mid,keys), CBMLOGDEB(mid,keys),
@@ -508,7 +526,7 @@ Logger* Logger::fpSingleton = nullptr;
   It expects that the methods `LogLevel()` and `LogKeys()` are defined in the
   execution context.
   If severity `Error` is compatile with `LogLevel()` it creates a message
-  context and passes `LogKeys()` as primary key set, `mid` as vakue of the 
+  context and passes `LogKeys()` as primary key set, `mid` as vakue of the
   `mid=` key, and `keys` as secondary key set.
 
   The message body must be streamed in with an `operator<<()` without a
@@ -552,7 +570,7 @@ Logger* Logger::fpSingleton = nullptr;
   \def CBMLOGFAT(mid,keys)
   \brief Writes a `Fatal` level message unconditionally
 
-  Works like CBMLOGERR(mid,keys), but unconditionally creates a severity 
+  Works like CBMLOGERR(mid,keys), but unconditionally creates a severity
   `Fatal` message
 */
 /*!
@@ -574,7 +592,7 @@ Logger* Logger::fpSingleton = nullptr;
   object `obj` for `LogLevel()` and `LogKeys()`.
   It expects that the methods `obj.LogLevel()` and `obj.LogKeys()` are defined.
   If severity `Trace` is compatile with `obj.LogLevel()` it creates a message
-  context and passes `obj.LogKeys()` as primary key set, uses `mid` as vakue 
+  context and passes `obj.LogKeys()` as primary key set, uses `mid` as vakue
   of the `mid=` key, and `keys` as secondary key set.
 
   The message body must be streamed in with an `operator<<()` without a
@@ -611,5 +629,5 @@ Logger* Logger::fpSingleton = nullptr;
   This macro is used for very essential status messages which should always
   be logged. It should be used sparingly.
 */
-  
+
 } // end namespace cbm

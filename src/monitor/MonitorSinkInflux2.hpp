@@ -11,20 +11,20 @@ namespace cbm {
 using namespace std;
 
 class MonitorSinkInflux2 : public MonitorSink {
-  public:
-                    MonitorSinkInflux2(Monitor& monitor, const string& path);
+public:
+  MonitorSinkInflux2(Monitor& monitor, const string& path);
 
-  virtual void      ProcessMetricVec(const vector<Metric>& metvec);
-  virtual void      ProcessHeartbeat();
+  virtual void ProcessMetricVec(const vector<Metric>& metvec);
+  virtual void ProcessHeartbeat();
 
-  private:
-  void              SendData(const string& msg);
+private:
+  void SendData(const string& msg);
 
-  private:
-  string            fHost;                  //!< server host name
-  string            fPort;                  //!< port for InfluxDB
-  string            fBucket;                //!< target bucket
-  string            fToken;                 //!< access token
+private:
+  string fHost;   //!< server host name
+  string fPort;   //!< port for InfluxDB
+  string fBucket; //!< target bucket
+  string fToken;  //!< access token
 };
 
 } // end namespace cbm

@@ -20,66 +20,64 @@
 namespace cbm {
 using namespace std;
 
-class MonitorSink;                          // forward declaration
+class MonitorSink; // forward declaration
 
 class Monitor {
-  public:
-                    Monitor();
-  virtual           ~Monitor();
+public:
+  Monitor();
+  virtual ~Monitor();
 
-                    Monitor(const Monitor&) = delete;
-                    Monitor& operator=(const Monitor&) = delete;
+  Monitor(const Monitor&) = delete;
+  Monitor& operator=(const Monitor&) = delete;
 
-  void              OpenSink(const string& sname);
-  void              CloseSink(const string& sname);
-  vector<string>    SinkList();
+  void OpenSink(const string& sname);
+  void CloseSink(const string& sname);
+  vector<string> SinkList();
 
-  void              QueueMetric(const Metric& point);
-  void              QueueMetric(Metric&& point);
-  void              QueueMetric(const string& measurement,
-                                const MetricTagSet& tagset,
-                                const MetricFieldSet& fieldset,
-                                sctime_point timestamp = sctime_point());
-  void              QueueMetric(const string& measurement,
-                                const MetricTagSet& tagset,
-                                MetricFieldSet&& fieldset,
-                                sctime_point timestamp = sctime_point());
-  void              QueueMetric(const string& measurement,
-                                MetricTagSet&& tagset,
-                                MetricFieldSet&& fieldset,
-                                sctime_point timestamp = sctime_point());
-  const string&     HostName() const;
+  void QueueMetric(const Metric& point);
+  void QueueMetric(Metric&& point);
+  void QueueMetric(const string& measurement,
+                   const MetricTagSet& tagset,
+                   const MetricFieldSet& fieldset,
+                   sctime_point timestamp = sctime_point());
+  void QueueMetric(const string& measurement,
+                   const MetricTagSet& tagset,
+                   MetricFieldSet&& fieldset,
+                   sctime_point timestamp = sctime_point());
+  void QueueMetric(const string& measurement,
+                   MetricTagSet&& tagset,
+                   MetricFieldSet&& fieldset,
+                   sctime_point timestamp = sctime_point());
+  const string& HostName() const;
 
+  static Monitor& Ref();
+  static Monitor* Ptr();
 
-  static Monitor&   Ref();
-  static Monitor*   Ptr();
-
-  public:
+public:
   // some constants
-  static const int  kELoopTimeout = 10000;  //!< monitor flush time in ms
+  static const int kELoopTimeout = 10000; //!< monitor flush time in ms
 
-  private:
-  void              Stop();
-  void              Wakeup();
-  void              EventLoop();
-  MonitorSink&      SinkRef(const string& sname);
+private:
+  void Stop();
+  void Wakeup();
+  void EventLoop();
+  MonitorSink& SinkRef(const string& sname);
 
-  private:
+private:
   using metvec_t = vector<Metric>;
-  using sink_uptr_t  = unique_ptr<MonitorSink>;
+  using sink_uptr_t = unique_ptr<MonitorSink>;
   using smap_t = unordered_map<string, sink_uptr_t>;
 
-  FileDescriptor    fEvtFd {};              //!< fd for eventfd file
-  thread            fThread {};             //!< worker thread
-  metvec_t          fMetVec {};             //!< metric list
-  mutex             fMetVecMutex {};        //!< mutex for fMetVec access
-  string            fHostName {""};         //!< hostname
-  bool              fStopped {false};       //!< signals thread rundown
-  smap_t            fSinkMap {};            //!< sink registry
-  mutex             fSinkMapMutex {};       //!< mutex for fSinkMap access
-  sctime_point      fNextHeartbeat {};      //!< time of next heartbeat
-  static Monitor*   fpSingleton;            //!< \glos{singleton} this
-
+  FileDescriptor fEvtFd{};       //!< fd for eventfd file
+  thread fThread{};              //!< worker thread
+  metvec_t fMetVec{};            //!< metric list
+  mutex fMetVecMutex{};          //!< mutex for fMetVec access
+  string fHostName{""};          //!< hostname
+  bool fStopped{false};          //!< signals thread rundown
+  smap_t fSinkMap{};             //!< sink registry
+  mutex fSinkMapMutex{};         //!< mutex for fSinkMap access
+  sctime_point fNextHeartbeat{}; //!< time of next heartbeat
+  static Monitor* fpSingleton;   //!< \glos{singleton} this
 };
 
 } // end namespace cbm

@@ -32,10 +32,10 @@ using namespace std;
   body.
  */
 
-LoggerSinkMonitor::LoggerSinkMonitor(Logger& logger, const string& path,
-                                     int lvl) :
-  LoggerSink(logger, path, lvl)
-{}
+LoggerSinkMonitor::LoggerSinkMonitor(Logger& logger,
+                                     const string& path,
+                                     int lvl)
+    : LoggerSink(logger, path, lvl) {}
 
 //-----------------------------------------------------------------------------
 /*! \brief Process a vector of messages
@@ -43,33 +43,35 @@ LoggerSinkMonitor::LoggerSinkMonitor(Logger& logger, const string& path,
 
 void LoggerSinkMonitor::ProcessMessageVec(const vector<LoggerMessage>& msgvec) {
   for (auto& msg : msgvec) {
-    if (msg.fSevId < fLogLevel) continue;
-    MetricTagSet tagset = { {"thread", msg.fThreadName },
-                            {"sev", to_string(msg.fSevId)} };
+    if (msg.fSevId < fLogLevel)
+      continue;
+    MetricTagSet tagset = {{"thread", msg.fThreadName},
+                           {"sev", to_string(msg.fSevId)}};
     size_t pbeg = 0;
     size_t pend = 0;
     bool cidmoni = false;
     while ((pbeg = msg.fKeys.find_first_not_of(',', pend)) != string::npos) {
       pend = msg.fKeys.find(',', pbeg);
-      string keyval = msg.fKeys.substr(pbeg, pend-pbeg);
+      string keyval = msg.fKeys.substr(pbeg, pend - pbeg);
       size_t pdel = keyval.find('=');
-      if (keyval == "cid=__Monitor") cidmoni = true;
-      if (pdel != string::npos && pdel > 0 && pdel+1 < keyval.size())
-        tagset.emplace_back(keyval.substr(0,pdel), keyval.substr(pdel+1));
+      if (keyval == "cid=__Monitor")
+        cidmoni = true;
+      if (pdel != string::npos && pdel > 0 && pdel + 1 < keyval.size())
+        tagset.emplace_back(keyval.substr(0, pdel), keyval.substr(pdel + 1));
     }
 
     // drop messages related to Monitor with a severity of Warning or above.
     // They will be related to MonitorSink processing, will lileky not be
     // delivered anyway, and might create an eternal Logger/Monitor loop
-    if (cidmoni && msg.fSevId >= Logger::kLogWarning) continue;
+    if (cidmoni && msg.fSevId >= Logger::kLogWarning)
+      continue;
 
     // ensure that Monitor is running, it is started after Logger and stopped
     // before Logger. A very early or very late Logger messages are therefore
     // not transfered to Monitor.
     if (Monitor::Ptr())
       Monitor::Ptr()->QueueMetric("Logger", move(tagset),
-                                  {{"msg", msg.fMessage}},
-                                  msg.fTime);
+                                  {{"msg", msg.fMessage}}, msg.fTime);
   }
 }
 

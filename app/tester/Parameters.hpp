@@ -15,11 +15,10 @@
 /** A ParametersException object signals an error in a given parameter
     on the command line or in a configuration file. */
 
-class ParametersException : public std::runtime_error
-{
+class ParametersException : public std::runtime_error {
 public:
   /// The ParametersException constructor.
-  explicit ParametersException(const std::string &what_arg = "")
+  explicit ParametersException(const std::string& what_arg = "")
       : std::runtime_error(what_arg) {}
 };
 
@@ -27,14 +26,13 @@ public:
 /** A Parameters object stores the information given on the command
     line or in a configuration file. */
 
-class Parameters
-{
+class Parameters {
 public:
   /// The Parameters command-line parsing constructor.
-  Parameters(int argc, char *argv[]);
+  Parameters(int argc, char* argv[]);
 
-  Parameters(const Parameters &) = delete;
-  void operator=(const Parameters &) = delete;
+  Parameters(const Parameters&) = delete;
+  void operator=(const Parameters&) = delete;
 
   std::string logfile;
   bool nosyslog = false;

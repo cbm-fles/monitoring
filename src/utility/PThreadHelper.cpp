@@ -26,7 +26,8 @@ using namespace std;
   This allows for example to identify the threads of a \glos{CBM} in a threads
   view display of `top` (`H` mode).
 
-  Worker instances set the thread name by convention to "Cbm:" + \glos{workerid}.
+  Worker instances set the thread name by convention to "Cbm:" +
+  \glos{workerid}.
 
   \note The Linux kernel limits the thread name length to 16 characters.
     `tname` will be truncated if longer.
@@ -35,7 +36,8 @@ using namespace std;
 void SetPThreadName(const string& tname) {
   // Note: the kernel limit is 16 char, see TASK_COMM_LEN; so truncate
   string tname16 = tname;
-  if (tname16.length() > 16) tname16.resize(16);
+  if (tname16.length() > 16)
+    tname16.resize(16);
   pthread_setname_np(pthread_self(), tname16.c_str());
 }
 
@@ -48,7 +50,7 @@ void SetPThreadName(const string& tname) {
 string PThreadName() {
   // Note: the kernel limit is 16 char, see TASK_COMM_LEN
   char tname[17] = {0};
-  (void) ::pthread_getname_np(pthread_self(), &tname[0], sizeof(tname)-1);
+  (void)::pthread_getname_np(pthread_self(), &tname[0], sizeof(tname) - 1);
   return string(tname);
 }
 

@@ -15,15 +15,15 @@ namespace cbm {
 using namespace std;
 
 class MonitorSinkFile : public MonitorSink {
-  public:
-                    MonitorSinkFile(Monitor& monitor, const string& path);
+public:
+  MonitorSinkFile(Monitor& monitor, const string& path);
 
-  virtual void      ProcessMetricVec(const vector<Metric>& metvec);
-  virtual void      ProcessHeartbeat();
+  virtual void ProcessMetricVec(const vector<Metric>& metvec);
+  virtual void ProcessHeartbeat();
 
-  private:
-  ostream*          fpCout {nullptr};       //!< pointer to cout/cerr
-  unique_ptr<ofstream>  fpOStream {};       //!< uptr to general output stream
+private:
+  ostream* fpCout{nullptr};         //!< pointer to cout/cerr
+  unique_ptr<ofstream> fpOStream{}; //!< uptr to general output stream
 };
 
 } // end namespace cbm

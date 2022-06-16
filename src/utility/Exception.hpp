@@ -12,15 +12,15 @@ namespace cbm {
 using namespace std;
 
 class Exception : public exception {
-  public:
-                    Exception() = default;
-  explicit          Exception(const string& str);
+public:
+  Exception() = default;
+  explicit Exception(const string& str);
 
   virtual const char* what() const noexcept;
-  const string&     What() const noexcept;
-  
-  private:
-  string            fString {""};           //!< what string
+  const string& What() const noexcept;
+
+private:
+  string fString{""}; //!< what string
 };
 
 } // end namespace cbm

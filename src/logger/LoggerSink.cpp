@@ -23,10 +23,7 @@ using namespace std;
   \param lvl    \glos{loglevel} for writing
  */
 
-LoggerSink::LoggerSink(Logger& logger, const string& path, int lvl) :
-  fLogger(logger),
-  fSinkPath(path),
-  fLogLevel(lvl)
-{}
+LoggerSink::LoggerSink(Logger& logger, const string& path, int lvl)
+    : fLogger(logger), fSinkPath(path), fLogLevel(lvl) {}
 
 } // end namespace cbm

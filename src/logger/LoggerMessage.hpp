@@ -16,22 +16,22 @@ namespace cbm {
 */
 
 struct LoggerMessage {
-                    LoggerMessage() = default;
-                    LoggerMessage(const sctime_point& time, int sev,
-                                  string&& tname, string&& keys, string&& text) :
-                      fTime(time),
-                      fSevId(sev),
-                      fThreadName(move(tname)),
-                      fKeys(move(keys)),
-                      fMessage(move(text)) {}
-                    LoggerMessage(const LoggerMessage& rhs) = delete;
-                    LoggerMessage(LoggerMessage&& rhs) = default;
+  LoggerMessage() = default;
+  LoggerMessage(const sctime_point& time,
+                int sev,
+                string&& tname,
+                string&& keys,
+                string&& text)
+      : fTime(time), fSevId(sev), fThreadName(move(tname)), fKeys(move(keys)),
+        fMessage(move(text)) {}
+  LoggerMessage(const LoggerMessage& rhs) = delete;
+  LoggerMessage(LoggerMessage&& rhs) = default;
 
-  sctime_point      fTime {};               //!< timestamp
-  int               fSevId {0};             //!< severity
-  string            fThreadName {""};       //!< thread name
-  string            fKeys {""};             //!< key set
-  string            fMessage {""};          //!< message body
+  sctime_point fTime{};   //!< timestamp
+  int fSevId{0};          //!< severity
+  string fThreadName{""}; //!< thread name
+  string fKeys{""};       //!< key set
+  string fMessage{""};    //!< message body
 };
 
 } // end namespace cbm

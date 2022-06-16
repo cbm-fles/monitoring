@@ -13,32 +13,32 @@
 namespace cbm {
 using namespace std;
 
-class Monitor;                               // forward declaration
+class Monitor; // forward declaration
 
 class MonitorSink {
-  public:
-                    MonitorSink(Monitor& monitor, const string& path);
-  virtual           ~MonitorSink() = default;
+public:
+  MonitorSink(Monitor& monitor, const string& path);
+  virtual ~MonitorSink() = default;
 
-  virtual void      ProcessMetricVec(const vector<Metric>& metvec) = 0;
-  virtual void      ProcessHeartbeat() = 0;
+  virtual void ProcessMetricVec(const vector<Metric>& metvec) = 0;
+  virtual void ProcessHeartbeat() = 0;
 
-  protected:
-  string            CleanString(const string& id);
-  string            EscapeString(const string& str);
-  string            InfluxTags(const Metric& point);
-  string            InfluxFields(const Metric& point);
-  string            InfluxLine(const Metric& point);
+protected:
+  string CleanString(const string& id);
+  string EscapeString(const string& str);
+  string InfluxTags(const Metric& point);
+  string InfluxFields(const Metric& point);
+  string InfluxLine(const Metric& point);
 
-  protected:
-  Monitor&          fMonitor;               //!< back reference to Monitor
-  string            fSinkPath;              //!< path for output
-  long              fStatNPoint {0};        //!< # of processed points
-  long              fStatNTag {0};          //!< # of processed tags
-  long              fStatNField {0};        //!< # of processed fields
-  long              fStatNSend {0};         //!< # of send requests
-  long              fStatNByte {0};         //!< # of send bytes
-  double            fStatSndTime {0.};      //!< time spend in send requests
+protected:
+  Monitor& fMonitor;       //!< back reference to Monitor
+  string fSinkPath;        //!< path for output
+  long fStatNPoint{0};     //!< # of processed points
+  long fStatNTag{0};       //!< # of processed tags
+  long fStatNField{0};     //!< # of processed fields
+  long fStatNSend{0};      //!< # of send requests
+  long fStatNByte{0};      //!< # of send bytes
+  double fStatSndTime{0.}; //!< time spend in send requests
 };
 
 } // end namespace cbm

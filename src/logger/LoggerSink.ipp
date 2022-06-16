@@ -9,16 +9,11 @@ namespace cbm {
   \param lvl  \glos{loglevel} for writing
  */
 
-inline void LoggerSink::SetLogLevel(int lvl) {
-  fLogLevel = lvl;
-}
+inline void LoggerSink::SetLogLevel(int lvl) { fLogLevel = lvl; }
 
 //-----------------------------------------------------------------------------
 //! \brief Return \glos{loglevel}
 
-inline int LoggerSink::LogLevel() const {
-  return fLogLevel;
-}
-
+inline int LoggerSink::LogLevel() const { return fLogLevel; }
 
 } // end namespace cbm

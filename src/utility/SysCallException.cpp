@@ -10,7 +10,7 @@
 
 namespace cbm {
 using namespace std;
-  
+
 /*! \class SysCallException
   \brief Exception with context and errno information
  */
@@ -28,10 +28,11 @@ using namespace std;
 \endcode
 */
 
-SysCallException::SysCallException(const string& where, const string& call,
-                                   int eno) :
-  Exception(fmt::format("{}: {} failed: {}", where, call,  ::strerror(eno)))
-{}
+SysCallException::SysCallException(const string& where,
+                                   const string& call,
+                                   int eno)
+    : Exception(
+          fmt::format("{}: {} failed: {}", where, call, ::strerror(eno))) {}
 
 //-----------------------------------------------------------------------------
 /*! \brief Constructor with 3 part context and errno information
@@ -47,10 +48,11 @@ SysCallException::SysCallException(const string& where, const string& call,
 \endcode
 */
 
-SysCallException::SysCallException(const string& where, const string& call,
-                                   const string& info, int eno) :
-  Exception(fmt::format("{}: {} for '{}' failed: {}", where, call, info,
-                        ::strerror(eno)))
-{}
+SysCallException::SysCallException(const string& where,
+                                   const string& call,
+                                   const string& info,
+                                   int eno)
+    : Exception(fmt::format(
+          "{}: {} for '{}' failed: {}", where, call, info, ::strerror(eno))) {}
 
 } // end namespace cbm

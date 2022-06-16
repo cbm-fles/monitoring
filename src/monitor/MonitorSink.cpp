@@ -28,10 +28,8 @@ using namespace std;
   \param path    path for output
  */
 
-MonitorSink::MonitorSink(Monitor& monitor, const string& path) :
-  fMonitor(monitor),
-  fSinkPath(path)
-{}
+MonitorSink::MonitorSink(Monitor& monitor, const string& path)
+    : fMonitor(monitor), fSinkPath(path) {}
 
 //-----------------------------------------------------------------------------
 /*! \brief Removes protocol characters from a string
@@ -73,7 +71,7 @@ string MonitorSink::EscapeString(const string& str) {
 
 string MonitorSink::InfluxTags(const Metric& point) {
   string res;
-  for (auto& tag: point.fTagset) {
+  for (auto& tag : point.fTagset) {
     res += res.empty() ? "" : ",";
     res += CleanString(tag.first) + "=" + CleanString(tag.second);
   }
@@ -84,32 +82,38 @@ string MonitorSink::InfluxTags(const Metric& point) {
 /*! \brief Return field string for a Metric `point` in InfluxDB line format
  */
 
-template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
+template <class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
+template <class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
 string MonitorSink::InfluxFields(const Metric& point) {
   stringstream ss;
-  ss.precision(16);                         // ensure full double precision
-  for (auto& field: point.fFieldset) {
-    if (ss.tellp() != 0) ss << ",";
+  ss.precision(16); // ensure full double precision
+  for (auto& field : point.fFieldset) {
+    if (ss.tellp() != 0)
+      ss << ",";
     auto& key = field.first;
     auto& val = field.second;
     ss << CleanString(key) << "=";
     // use overloaded visitor pattern as described in cppreference.com
-    visit(overloaded {
-        [&ss](bool arg) {                   // case bool
-          ss << (arg ? "true" : "false"); },
-        [&ss](int arg) {                    // case int
-          ss << arg << "i";},
-        [&ss](long arg) {                   // case long
-          ss << arg << "i";},
-        [&ss](unsigned long arg) {          // case unsigned long
-          ss << arg << "i";},
-        [&ss](double arg) {                 // case double
-          ss << arg;},
-        [this,&ss](const string& arg) {     // case string
-          ss << '"' << EscapeString(arg) << '"'; }
-      }, val);
+    visit(overloaded{[&ss](bool arg) { // case bool
+                       ss << (arg ? "true" : "false");
+                     },
+                     [&ss](int arg) { // case int
+                       ss << arg << "i";
+                     },
+                     [&ss](long arg) { // case long
+                       ss << arg << "i";
+                     },
+                     [&ss](unsigned long arg) { // case unsigned long
+                       ss << arg << "i";
+                     },
+                     [&ss](double arg) { // case double
+                       ss << arg;
+                     },
+                     [this, &ss](const string& arg) { // case string
+                       ss << '"' << EscapeString(arg) << '"';
+                     }},
+          val);
   }
   return ss.str();
 }
