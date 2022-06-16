@@ -23,3 +23,4 @@ FetchContent_MakeAvailable(fmtlib)
 
 add_subdirectory(src)
 add_subdirectory(app/tester)
+add_subdirectory(app/monitor_tester)
