@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
   fmtlib
   GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG 5.3.0)
+  GIT_TAG 8.1.1)
 FetchContent_MakeAvailable(fmtlib)
 # Adds fmt::fmt
 
